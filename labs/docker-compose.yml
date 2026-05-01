@@ -1,4 +1,13 @@
-version: '3.8'
+# Docker Compose configuration for Prometheus monitoring stack
+#
+# Note: The following directories and configuration files will be created in subsequent tasks:
+# - ./sample-app/        - Created in Task 3 (sample application with metrics)
+# - ./load-generator/    - Created in Task 4 (load generation for testing)
+# - ./grafana/provisioning/ - Created in Task 5 (Grafana dashboard provisioning)
+# - prometheus.yml       - Created in Task 6 (Prometheus configuration)
+# - alertmanager.yml     - Created in Task 6 (Alertmanager configuration)
+# - blackbox.yml         - Created in Task 6 (Blackbox exporter configuration)
+
 services:
   prometheus:
     image: prom/prometheus:v2.45.0
@@ -21,7 +30,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:admin}
       GF_USERS_ALLOW_SIGN_UP: "false"
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
@@ -68,7 +77,7 @@ services:
     environment:
       POSTGRES_DB: monitoring_app
       POSTGRES_USER: app
-      POSTGRES_PASSWORD: apppass
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:apppass}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
@@ -80,7 +89,7 @@ services:
     ports:
       - "9187:9187"
     environment:
-      DATA_SOURCE_NAME: "postgresql://app:apppass@postgres:5432/monitoring_app?sslmode=disable"
+      DATA_SOURCE_NAME: "postgresql://app:${POSTGRES_PASSWORD:apppass}@postgres:5432/monitoring_app?sslmode=disable"
     networks:
       - monitoring
     depends_on:
@@ -95,7 +104,7 @@ services:
       - monitoring
 
   redis-exporter:
-    image: oliver006/redis_exporter:latest
+    image: oliver006/redis_exporter:v1.57.0
     restart: unless-stopped
     ports:
       - "9121:9121"

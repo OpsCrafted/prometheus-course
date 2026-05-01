@@ -17,7 +17,25 @@
       "Bash(grep -E '^\\\\s{2}\\(prometheus|node-exporter|sample-endpoint\\):$' /Users/boris/prometheus-course/labs/docker-compose.yml)",
       "Bash(make help *)",
       "Bash(make *)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(pkill -f \"node server/app.js\")",
+      "Bash(npm start *)",
+      "Bash(curl -s http://localhost:3000/api/guides)",
+      "Bash(curl -s http://localhost:3000/api/guides/getting-started)",
+      "mcp__plugin_everything-claude-code_playwright__browser_navigate",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(cat)",
+      "Bash(node /tmp/test-render.js)",
+      "Bash(pkill -f \"docker-compose\")",
+      "Bash(grep *)",
+      "Bash(ssh *)",
+      "Bash(git filter-branch *)",
+      "Bash(git stash *)",
+      "Bash(git *)",
+      "Bash(docker-compose -f labs/docker-compose.yml config)",
+      "Bash(docker compose *)"
     ]
   }
 }
