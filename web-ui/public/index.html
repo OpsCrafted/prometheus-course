@@ -54,7 +54,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     // Terminal setup
     const terminalDiv = document.getElementById('terminal');
@@ -169,7 +168,32 @@
           return;
         }
 
-        const html = marked(data.content);
+        function markdownToHtml(md) {
+          let html = md
+            // Code blocks (with or without language)
+            .replace(/```[\w]*\n([\s\S]*?)```/gm, '<pre><code>$1</code></pre>')
+            // Headings
+            .replace(/^### (.*?)$/gm, '<h3>$1</h3>')
+            .replace(/^## (.*?)$/gm, '<h2>$1</h2>')
+            .replace(/^# (.*?)$/gm, '<h1>$1</h1>')
+            // Inline code
+            .replace(/`([^`]+)`/g, '<code>$1</code>')
+            // Bold
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            // Italic
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            // Links
+            .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+            // Lists
+            .replace(/^\- (.*?)$/gm, '<li>$1</li>')
+            .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+            // Paragraphs (replace double newlines with p tags, but not if inside pre)
+            .replace(/\n\n+/g, '</p><p>');
+
+          return '<p>' + html + '</p>';
+        }
+
+        const html = markdownToHtml(data.content);
         document.getElementById('guideContent').innerHTML = html;
       } catch (error) {
         console.error('Failed to load guide:', error);
