@@ -1,7 +1,8 @@
 version: '3.8'
 services:
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.45.0
+    restart: unless-stopped
     ports:
       - "9090:9090"
     volumes:
@@ -15,7 +16,8 @@ services:
       - prometheus-net
 
   node-exporter:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:v1.6.1
+    restart: unless-stopped
     ports:
       - "9100:9100"
     networks:
