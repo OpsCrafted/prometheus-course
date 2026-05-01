@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
-	"sync"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -38,9 +41,6 @@ var (
 		},
 		[]string{"endpoint"},
 	)
-
-	// Mutex for concurrent connection tracking
-	connMutex sync.Mutex
 )
 
 func init() {
@@ -54,14 +54,8 @@ func init() {
 func instrumentedHandler(endpoint string, handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Increment active connections
-		connMutex.Lock()
 		activeConnections.Inc()
-		connMutex.Unlock()
-		defer func() {
-			connMutex.Lock()
-			activeConnections.Dec()
-			connMutex.Unlock()
-		}()
+		defer activeConnections.Dec()
 
 		// Record request metrics
 		start := time.Now()
@@ -96,20 +90,54 @@ func handleError(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	// Create a new mux instead of using DefaultServeMux
+	mux := http.NewServeMux()
+
 	// Register instrumented handlers
-	http.HandleFunc("/", instrumentedHandler("/", handleRoot))
-	http.HandleFunc("/slow", instrumentedHandler("/slow", handleSlow))
-	http.HandleFunc("/error", instrumentedHandler("/error", handleError))
+	mux.HandleFunc("/", instrumentedHandler("/", handleRoot))
+	mux.HandleFunc("/slow", instrumentedHandler("/slow", handleSlow))
+	mux.HandleFunc("/error", instrumentedHandler("/error", handleError))
 
 	// Register metrics endpoint
-	http.Handle("/metrics", promhttp.Handler())
+	mux.Handle("/metrics", promhttp.Handler())
 
 	port := ":8080"
-	log.Printf("Starting server on port 8080...")
+	log.Printf("Starting server on %s...", port)
 	log.Printf("Visit http://localhost:8080 for Hello message")
 	log.Printf("Visit http://localhost:8080/metrics for Prometheus metrics")
 
-	if err := http.ListenAndServe(port, nil); err != nil {
-		log.Fatalf("Server failed to start: %v", err)
+	// Create HTTP server with timeouts
+	srv := &http.Server{
+		Addr:         port,
+		Handler:      mux,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  60 * time.Second,
 	}
+
+	// Channel to listen for shutdown signals
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGTERM, syscall.SIGINT)
+
+	// Start server in a goroutine
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Server failed to start: %v", err)
+		}
+	}()
+
+	// Wait for shutdown signal
+	<-sigChan
+	log.Println("Shutdown signal received, gracefully shutting down...")
+
+	// Create a context with timeout for graceful shutdown
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	// Gracefully shutdown the server
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatalf("Server forced to shutdown: %v", err)
+	}
+
+	log.Println("Server exited")
 }
