@@ -104,7 +104,6 @@ cd prometheus-course
 make setup
 
 # 3. Open course in browser (optional, or read offline)
-# Browser: http://localhost:3000
 # Read: docs/getting-started/README.md
 ```
 
@@ -164,7 +163,6 @@ prometheus-course/
 │   ├── module-1-fundamentals/    # Day 1-4 labs + solutions
 │   ├── module-2-instrumentation/ # Day 5-8 labs + solutions
 │   └── module-3-promql/          # Day 9-15 labs + solutions
-├── web-ui/                       # Browser-based course interface
 └── Makefile                      # Setup, reset, cleanup
 
 ```
