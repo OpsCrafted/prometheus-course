@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prometheus Course</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #f5f5f5;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .header {
+      background: #1a1a1a;
+      color: white;
+      padding: 16px 20px;
+      border-bottom: 1px solid #333;
+      z-index: 100;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .container {
+      display: flex;
+      height: calc(100vh - 60px);
+      gap: 1px;
+      background: #ddd;
+    }
+
+    .sidebar {
+      width: 280px;
+      background: white;
+      border-right: 1px solid #e0e0e0;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .guide-list {
+      list-style: none;
+    }
+
+    .guide-section {
+      margin-bottom: 20px;
+    }
+
+    .guide-section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      padding: 0 8px;
+    }
+
+    .guide-item {
+      padding: 8px 12px;
+      margin-bottom: 4px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #333;
+      transition: background 0.2s;
+    }
+
+    .guide-item:hover {
+      background: #f5f5f5;
+    }
+
+    .guide-item.active {
+      background: #007acc;
+      color: white;
+      font-weight: 500;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      overflow: hidden;
+    }
+
+    .guide-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .guide-content h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+    }
+
+    .guide-content h2 {
+      font-size: 20px;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      color: #1a1a1a;
+    }
+
+    .guide-content h3 {
+      font-size: 16px;
+      margin-top: 16px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .guide-content code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+    }
+
+    .guide-content pre {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 12px;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin: 12px 0;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .guide-content pre code {
+      background: transparent;
+      padding: 0;
+      color: inherit;
+    }
+
+    .guide-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+
+    .guide-content th, .guide-content td {
+      border: 1px solid #e0e0e0;
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    .guide-content th {
+      background: #f5f5f5;
+      font-weight: 600;
+    }
+
+    .guide-content ul, .guide-content ol {
+      margin: 12px 0 12px 24px;
+    }
+
+    .guide-content li {
+      margin-bottom: 4px;
+    }
+
+    .terminal-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid #e0e0e0;
+      background: #1e1e1e;
+      min-height: 200px;
+    }
+
+    .terminal-header {
+      background: #252526;
+      color: #cccccc;
+      padding: 8px 12px;
+      font-size: 12px;
+      border-bottom: 1px solid #3e3e42;
+    }
+
+    .terminal {
+      flex: 1;
+      overflow: hidden;
+      padding: 12px;
+    }
+
+    .xterm {
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .loading {
+      color: #999;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📊 Prometheus Course</h1>
+  </div>
+
+  <div class="container">
+    <div class="sidebar">
+      <ul class="guide-list" id="guideList"></ul>
+    </div>
+
+    <div class="content">
+      <div class="guide-content" id="guideContent">
+        <div class="loading">Loading course...</div>
+      </div>
+
+      <div class="terminal-container">
+        <div class="terminal-header">Terminal</div>
+        <div class="terminal" id="terminal"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    const term = new Terminal({
+      rows: 10,
+      cols: 80,
+      theme: {
+        background: '#1e1e1e',
+        foreground: '#d4d4d4',
+        cursor: '#aeafad'
+      }
+    });
+
+    const fitAddon = new FitAddon();
+    term.loadAddon(fitAddon);
+    term.open(document.getElementById('terminal'));
+
+    let ws = null;
+    let wsConnected = false;
+
+    function connectWebSocket() {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${protocol}//${window.location.host}`);
+
+      ws.onopen = () => {
+        wsConnected = true;
+        term.write('\x1b[32mTerminal connected\x1b[0m\r\n');
+      };
+
+      ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        if (msg.type === 'output') {
+          term.write(msg.data);
+        }
+      };
+
+      ws.onclose = () => {
+        wsConnected = false;
+        term.write('\x1b[31mTerminal disconnected\x1b[0m\r\n');
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        term.write('\x1b[31mTerminal error\x1b[0m\r\n');
+      };
+    }
+
+    term.onData((data) => {
+      if (wsConnected && ws) {
+        ws.send(JSON.stringify({ type: 'input', data }));
+      }
+    });
+
+    connectWebSocket();
+
+    window.addEventListener('resize', () => {
+      fitAddon.fit();
+    });
+
+    setTimeout(() => fitAddon.fit(), 100);
+
+    async function loadGuides() {
+      try {
+        const response = await fetch('/api/guides');
+        const guides = await response.json();
+
+        const guideList = document.getElementById('guideList');
+        let currentSection = null;
+
+        guides.forEach((guide) => {
+          if (guide.section !== currentSection) {
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'guide-section';
+
+            const title = document.createElement('div');
+            title.className = 'guide-section-title';
+            title.textContent = guide.section;
+            sectionDiv.appendChild(title);
+
+            const list = document.createElement('div');
+            list.id = `section-${guide.section}`;
+            sectionDiv.appendChild(list);
+
+            guideList.appendChild(sectionDiv);
+            currentSection = guide.section;
+          }
+
+          const item = document.createElement('div');
+          item.className = 'guide-item';
+          item.textContent = guide.title;
+          item.onclick = () => loadGuide(guide.id, item);
+
+          document.getElementById(`section-${guide.section}`).appendChild(item);
+        });
+
+        if (guides.length > 0) {
+          loadGuide(guides[0].id);
+        }
+      } catch (error) {
+        console.error('Failed to load guides:', error);
+      }
+    }
+
+    async function loadGuide(id, element) {
+      try {
+        const response = await fetch(`/api/guides/${id}`);
+        const data = await response.json();
+
+        const content = document.getElementById('guideContent');
+        content.innerHTML = marked.parse(data.content);
+
+        document.querySelectorAll('.guide-item').forEach((item) => {
+          item.classList.remove('active');
+        });
+        if (element) {
+          element.classList.add('active');
+        }
+      } catch (error) {
+        console.error('Failed to load guide:', error);
+      }
+    }
+
+    loadGuides();
+  </script>
+</body>
+</html>
