@@ -181,7 +181,7 @@ prometheus-course/
 │       └── specs/
 │           └── 2026-05-01-prometheus-course-design.md (this file)
 ├── labs/
-│   ├── docker-compose.yml (Prometheus + Node Exporter + sample endpoint)
+│   ├── docker-compose.yml (Prometheus + Node Exporter + Node Exporter)
 │   ├── setup.sh (one-liner for full setup)
 │   ├── module-1-fundamentals/
 │   │   ├── lab-1-scrape-config.md + prometheus.yml
@@ -258,7 +258,7 @@ Each guide (day-X.md) follows this structure:
 
 **Shared Environment:**
 - All labs use Docker Compose (labs/docker-compose.yml)
-  - Prometheus (pulls from Node Exporter + sample endpoint)
+  - Prometheus (pulls from Node Exporter + Node Exporter)
   - Node Exporter (exposes system metrics)
   - Sample metrics endpoint (exposes hardcoded metrics for early labs)
   - One-liner: `docker-compose -f labs/docker-compose.yml up`
@@ -368,7 +368,7 @@ Each guide (day-X.md) follows this structure:
 ## Hands-On: Explore Prometheus UI (30 min)
 1. Start Docker: `docker-compose up`
 2. Open browser: http://localhost:9090
-3. Click "Targets" tab — see Node Exporter + sample endpoint
+3. Click "Targets" tab — see Node Exporter + Node Exporter
 4. Click "Graph" tab — explore metrics
 5. Run sample query: `up{job="prometheus"}`
 

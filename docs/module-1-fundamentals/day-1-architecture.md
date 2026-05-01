@@ -119,7 +119,7 @@ See [lab-1-scrape-config.md](../../labs/module-1-fundamentals/lab-1-scrape-confi
 
 ## Exit Criteria
 
-- [ ] Docker running: `docker-compose ps` shows 3 containers
+- [ ] Docker running: `docker-compose ps` shows 2 containers (prometheus, node-exporter)
 - [ ] Prometheus responds: `curl http://localhost:9090/api/v1/targets`
 - [ ] See at least 2 targets in UI (Targets tab)
 - [ ] Can run query `up` and see results

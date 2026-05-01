@@ -23,13 +23,6 @@ services:
     networks:
       - prometheus-net
 
-  sample-endpoint:
-    image: httpbin/httpbin
-    ports:
-      - "8080:80"
-    networks:
-      - prometheus-net
-
 volumes:
   prometheus-data:
 
