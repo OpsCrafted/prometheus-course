@@ -73,6 +73,16 @@ app.get('/api/guides/:id', (req, res) => {
   const { id } = req.params;
   const docsPath = path.join(COURSE_ROOT, '..', 'docs');
 
+  // Special case for getting-started
+  if (id === 'getting-started') {
+    const filePath = path.join(docsPath, 'getting-started/README.md');
+    if (fs.existsSync(filePath)) {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      return res.json({ content, path: filePath });
+    }
+  }
+
+  // Find day-X files by walking the directory
   let filePath = null;
   const walk = (dir) => {
     try {
@@ -82,7 +92,7 @@ app.get('/api/guides/:id', (req, res) => {
         const stat = fs.statSync(fullPath);
         if (stat.isDirectory()) {
           walk(fullPath);
-        } else if (file.includes(id) && file.endsWith('.md')) {
+        } else if (file.startsWith(`${id}-`) && file.endsWith('.md')) {
           filePath = fullPath;
           return;
         }
@@ -95,7 +105,7 @@ app.get('/api/guides/:id', (req, res) => {
   walk(docsPath);
 
   if (!filePath || !fs.existsSync(filePath)) {
-    return res.status(404).json({ error: 'Guide not found' });
+    return res.status(404).json({ error: `Guide not found: ${id}` });
   }
 
   const content = fs.readFileSync(filePath, 'utf-8');
