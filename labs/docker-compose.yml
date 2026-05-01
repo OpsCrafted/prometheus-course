@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   prometheus:
     image: prom/prometheus:v2.45.0
@@ -5,14 +6,40 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus-base.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
       - '--web.enable-lifecycle'
     networks:
-      - prometheus-net
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - grafana-data:/var/lib/grafana
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
+
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    restart: unless-stopped
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    networks:
+      - monitoring
 
   node-exporter:
     image: prom/node-exporter:v1.6.1
@@ -20,10 +47,100 @@ services:
     ports:
       - "9100:9100"
     networks:
-      - prometheus-net
+      - monitoring
+
+  sample-app:
+    build: ./sample-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - monitoring
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: monitoring_app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: apppass
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - monitoring
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.13.0
+    restart: unless-stopped
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://app:apppass@postgres:5432/monitoring_app?sslmode=disable"
+    networks:
+      - monitoring
+    depends_on:
+      - postgres
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - monitoring
+
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    restart: unless-stopped
+    ports:
+      - "9121:9121"
+    command:
+      - '-redis.addr=redis:6379'
+    networks:
+      - monitoring
+    depends_on:
+      - redis
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.24.0
+    restart: unless-stopped
+    ports:
+      - "9115:9115"
+    volumes:
+      - ./blackbox.yml:/etc/blackbox-exporter/config.yml
+    command:
+      - '--config.file=/etc/blackbox-exporter/config.yml'
+    networks:
+      - monitoring
+
+  load-generator:
+    build: ./load-generator
+    restart: unless-stopped
+    environment:
+      TARGET_URL: "http://sample-app:8080"
+      REQUEST_RATE: "10"
+    networks:
+      - monitoring
+    depends_on:
+      - sample-app
+
+  pushgateway:
+    image: prom/pushgateway:v1.6.2
+    restart: unless-stopped
+    ports:
+      - "9091:9091"
+    networks:
+      - monitoring
 
 volumes:
   prometheus-data:
+  grafana-data:
+  postgres-data:
 
 networks:
-  prometheus-net:
+  monitoring:
