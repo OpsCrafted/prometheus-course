@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus-base.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    networks:
+      - prometheus-net
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    ports:
+      - "9100:9100"
+    networks:
+      - prometheus-net
+
+  sample-endpoint:
+    image: httpbin/httpbin
+    ports:
+      - "8080:80"
+    networks:
+      - prometheus-net
+
+volumes:
+  prometheus-data:
+
+networks:
+  prometheus-net:
