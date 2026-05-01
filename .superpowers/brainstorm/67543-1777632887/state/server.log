@@ -1,1 +1,2 @@
 {"type":"server-started","port":55243,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:55243","screen_dir":"/Users/boris/prometheus-course/.superpowers/brainstorm/67543-1777632887/content","state_dir":"/Users/boris/prometheus-course/.superpowers/brainstorm/67543-1777632887/state"}
+{"type":"server-stopped","reason":"idle timeout"}
