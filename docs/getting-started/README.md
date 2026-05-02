@@ -414,6 +414,14 @@ docker compose up -d
 make setup
 ```
 
+## After This Course
+
+After completing Module 3, you're ready for:
+
+1. **[Golden Signals Lab](../capstone/golden-signals-lab/)** — Use 4 signals to troubleshoot a real incident
+2. **[Module 6: Pitfalls](../06-pitfalls/)** — Learn what breaks Prometheus and how to fix it
+3. **Production Deployment** — Your course environment is production-like. Deploy with confidence.
+
 ## Summary Checklist
 
 - [ ] Docker installed and running

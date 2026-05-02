@@ -210,6 +210,18 @@ You'll have hands-on experience with the monitoring stack used in production sys
 
 ---
 
+## 🎓 Full Learning Path
+
+**Modules 1-3:** Core skills (fundamentals, instrumentation, PromQL)
+
+**Bonus Content:**
+- [Architecture Diagrams](docs/reference/architecture-diagrams.md) — Visual reference for pull model, alerting, service discovery
+- [Python Instrumentation](docs/module-2-instrumentation/day-6-python-instrumentation.md) — Go + Python side-by-side
+- [Golden Signals Lab](docs/capstone/golden-signals-lab/README.md) — Real SRE troubleshooting scenario
+- [Module 6: Pitfalls & Anti-Patterns](docs/06-pitfalls/README.md) — Avoid production disasters
+
+---
+
 ## ☕ Support This Course
 
 Enjoying this course? Consider supporting future development and maintenance:
