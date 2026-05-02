@@ -89,7 +89,7 @@ docker-compose --version
 cd ~/projects  # or wherever you prefer
 
 # Clone the course
-git clone https://github.com/boris-aws/prometheus-course.git
+git clone https://github.com/OpsCrafted/prometheus-course.git
 cd prometheus-course
 ```
 
