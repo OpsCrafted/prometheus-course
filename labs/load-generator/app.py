@@ -16,7 +16,6 @@ import types
 import random
 import logging
 import threading
-from typing import NoReturn
 
 import requests
 
@@ -34,7 +33,6 @@ shutdown_event = threading.Event()
 
 def signal_handler(signum: int, frame: types.FrameType | None) -> None:
     """Handle SIGTERM and SIGINT signals for graceful shutdown."""
-    global shutdown_event
     signal_name = signal.Signals(signum).name
     logger.info(
         f"Received {signal_name}, initiating graceful shutdown..."
@@ -109,16 +107,13 @@ def log_request(result: dict) -> None:
         )
 
 
-def run_load_generator(target_url: str, request_rate: float) -> NoReturn:
+def run_load_generator(target_url: str, request_rate: float) -> None:
     """
     Run the load generator continuously.
 
     Args:
         target_url: Base URL of target service
         request_rate: Number of requests per second
-
-    Raises:
-        NoReturn: Infinite loop until shutdown
     """
     delay_between_requests = 1.0 / request_rate
     request_count = 0
