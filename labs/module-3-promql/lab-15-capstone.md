@@ -24,8 +24,8 @@ count(up) - count(up == 1) # Count DOWN targets
 **Scenario:** Your app is slow. Analyze request rates.
 
 **Write queries that show:**
-1. Total requests per second (all paths)
-2. Requests per second by path
+1. Total requests per second (all endpoints)
+2. Requests per second by endpoint
 3. Success rate (200 responses)
 4. Error rate (5XX responses)
 

@@ -17,7 +17,7 @@
 {method="GET",endpoint="/",status="200"}  5  (5 requests in 5 minutes)
 ```
 
-**Query 4:** `rate(http_requests_total[5m]) by (status)`
+**Query 4:** `sum(rate(http_requests_total[5m])) by (status)`
 ```
 {status="200"}  0.02
 ```

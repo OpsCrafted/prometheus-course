@@ -27,7 +27,7 @@ Result: Total increase in last 5 min (e.g., 15 requests)
 
 **Query 4:** Rate by status
 ```
-rate(http_requests_total[5m]) by (status)
+sum(rate(http_requests_total[5m])) by (status)
 ```
 Result: Per-second rate grouped by status
 
