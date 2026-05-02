@@ -7,7 +7,7 @@
 
 1. Install Docker (if not already installed)
 2. Clone the course repository
-3. Start Prometheus via Docker Compose
+3. Start the full monitoring stack via Docker Compose
 4. Explore Prometheus UI
 5. Write 5 basic PromQL queries
 6. Understand what those queries mean
@@ -42,7 +42,7 @@ For this course, Docker lets you run Prometheus and other tools without clutteri
 **Verify installation:**
 ```bash
 docker --version
-docker-compose --version
+docker compose version
 ```
 
 Expected output:
@@ -56,7 +56,7 @@ Docker Compose version 2.x.x
 ```bash
 # Install Docker
 sudo apt-get update
-sudo apt-get install docker.io docker-compose -y
+sudo apt-get install docker.io docker-compose-plugin -y
 
 # Add your user to docker group (avoid sudo)
 sudo usermod -aG docker $USER
@@ -64,7 +64,7 @@ newgrp docker
 
 # Verify
 docker --version
-docker-compose --version
+docker compose version
 ```
 
 ### Windows
@@ -79,7 +79,7 @@ docker-compose --version
 **Verify in PowerShell or Git Bash:**
 ```bash
 docker --version
-docker-compose --version
+docker compose version
 ```
 
 ## Step 2: Clone the Repository
@@ -107,8 +107,10 @@ ls -la
 ```
 
 You should see:
-- `docker-compose.yml` — Configuration to start Prometheus + Node Exporter
-- `prometheus.yml` — Prometheus scrape configuration
+- `docker-compose.yml` — Configuration to start the full 11-service monitoring stack
+- `prometheus.yml` — Prometheus scrape configuration (6 scrape jobs)
+- `alertmanager.yml` — Alertmanager routing configuration
+- `blackbox.yml` — Blackbox exporter probe configuration
 - `setup.sh` — Helper script
 
 ## Step 2b: Using Make Commands (Optional but Recommended)
@@ -136,35 +138,53 @@ make clean
 
 If you prefer direct Docker commands, proceed to Step 3 below.
 
-## Step 3: Start Prometheus
+## Step 3: Start the Monitoring Stack
 
 ```bash
 # From inside labs/ directory
-docker-compose up -d
+docker compose up -d
 ```
 
 Expected output:
 ```
-Creating network "labs_default" with the default driver
-Creating labs-prometheus-1    ... done
-Creating labs-node-exporter-1 ... done
+[+] Running 11/11
+ - Container labs-prometheus-1         Started
+ - Container labs-grafana-1            Started
+ - Container labs-alertmanager-1       Started
+ - Container labs-node-exporter-1      Started
+ - Container labs-blackbox-exporter-1  Started
+ - Container labs-sample-app-1         Started
+ - Container labs-load-generator-1     Started
+ - Container labs-postgres-1           Started
+ - Container labs-postgres-exporter-1  Started
+ - Container labs-redis-1              Started
+ - Container labs-redis-exporter-1     Started
 ```
 
-`-d` means "detached" (runs in background). If you want to see logs, use `docker-compose up` without `-d` (Ctrl+C to stop).
+`-d` means "detached" (runs in background). If you want to see logs, use `docker compose up` without `-d` (Ctrl+C to stop).
 
 **Verify containers are running:**
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 Expected output:
 ```
-NAME                       COMMAND                   STATE           PORTS
-labs-prometheus-1          "/bin/prometheus ..."     Up 2 minutes    0.0.0.0:9090->9090/tcp
-labs-node-exporter-1       "/bin/node_exporter"      Up 2 minutes    0.0.0.0:9100->9100/tcp
+NAME                          COMMAND                   STATE           PORTS
+labs-alertmanager-1           "/bin/alertmanager ..."   Up              0.0.0.0:9093->9093/tcp
+labs-blackbox-exporter-1      "/bin/blackbox_expo..."   Up              0.0.0.0:9115->9115/tcp
+labs-grafana-1                "/run.sh"                 Up              0.0.0.0:3000->3000/tcp
+labs-load-generator-1         "/app/load-generato..."   Up
+labs-node-exporter-1          "/bin/node_exporter"      Up              0.0.0.0:9100->9100/tcp
+labs-postgres-1               "docker-entrypoint...."   Up              0.0.0.0:5432->5432/tcp
+labs-postgres-exporter-1      "/bin/postgres_expo..."   Up              0.0.0.0:9187->9187/tcp
+labs-prometheus-1             "/bin/prometheus ..."     Up              0.0.0.0:9090->9090/tcp
+labs-redis-1                  "docker-entrypoint...."   Up              0.0.0.0:6379->6379/tcp
+labs-redis-exporter-1         "/redis_exporter ..."     Up              0.0.0.0:9121->9121/tcp
+labs-sample-app-1             "/app/server"             Up              0.0.0.0:8080->8080/tcp
 ```
 
-Both should be "Up". If either shows "Exited", see Troubleshooting below.
+All services should show "Up". If any shows "Exited", see Troubleshooting below.
 
 ## Step 3b: Testing Your Environment
 
@@ -189,7 +209,7 @@ Expected output: Lines starting with `# HELP` and `# TYPE` followed by metric da
 curl http://localhost:9090/api/v1/query?query=up
 ```
 
-Expected output: JSON with targets status (should see `prometheus` and `node-exporter` with value `1`).
+Expected output: JSON with target statuses. You should see entries for `prometheus`, `node-exporter`, `sample-app`, `postgres-exporter`, `redis-exporter`, and `blackbox` — each with value `1`.
 
 If any curl command fails, review Troubleshooting section below.
 
@@ -206,12 +226,15 @@ You should see:
 - Left sidebar with query history
 - "Alerts" and "Status" menus in top bar
 
-**Check the Targets:** Click "Status" → "Targets" in the menu. You should see:
-- `prometheus` target (monitoring Prometheus itself)
-- `node-exporter` target (monitoring system metrics like CPU, memory, disk)
-- Both should show "UP" in green
+**Check the Targets:** Click "Status" → "Targets" in the menu. You should see 6+ scrape jobs, each with one or more targets:
+- `prometheus` — Prometheus scraping itself
+- `node-exporter` — Host system metrics (CPU, memory, disk)
+- `sample-app` — Application metrics from the demo service
+- `postgres-exporter` — PostgreSQL database metrics
+- `redis-exporter` — Redis cache metrics
+- `blackbox` — HTTP probe of the sample app endpoint
 
-If targets show "DOWN", wait 30 seconds and refresh. Targets take time to initialize.
+All targets should show "UP" in green. If any show "DOWN", wait 30 seconds and refresh. Targets take time to initialize.
 
 ## Step 5: Write Your First PromQL Queries
 
@@ -227,7 +250,7 @@ up
 - `1` = target is healthy and responding
 - `0` = target is down
 
-**What you'll see:** A table with two rows (one for prometheus, one for node-exporter), both showing `1`.
+**What you'll see:** A table with 6+ rows (one per scrape target), all showing `1`.
 
 ### Query 2: `node_cpu_seconds_total`
 
@@ -261,9 +284,9 @@ count(up)
 
 **What does this mean?** "Count how many targets are being monitored"
 
-`count()` is an aggregation function. It adds up all the `up` values. Since we have 2 targets and each is 1, the result is 2.
+`count()` is an aggregation function. It counts the number of time series returned by `up`. With 6 scrape jobs all reporting healthy, the result is 6 or higher.
 
-**What you'll see:** A single number: `2`
+**What you'll see:** A single number: `6` or more
 
 ### Query 5: `rate(node_cpu_seconds_total[5m])`
 
@@ -303,23 +326,23 @@ netstat -ano | findstr :9090
 
 # Stop the container using that port or choose a different port
 # If it's our Prometheus, stop it:
-docker-compose down
+docker compose down
 ```
 
 ### Targets showing DOWN
 
-**Error:** Status → Targets shows "DOWN" for one or both targets
+**Error:** Status → Targets shows "DOWN" for one or more targets
 
 **Fix:**
 - Wait 30 seconds and refresh (targets take time to initialize)
 - Check Docker logs:
   ```bash
-  docker-compose logs prometheus
-  docker-compose logs node-exporter
+  docker compose logs prometheus
+  docker compose logs node-exporter
   ```
 - Look for error messages. Common issues:
   - Misconfigured prometheus.yml (check syntax)
-  - Host network permissions (try `docker-compose down && docker-compose up -d` again)
+  - Host network permissions (try `docker compose down && docker compose up -d` again)
 
 ### Prometheus UI won't load (blank page, timeout)
 
@@ -328,14 +351,14 @@ docker-compose down
 **Fix:**
 ```bash
 # Check if Prometheus container is running
-docker-compose ps
+docker compose ps
 
 # Check logs
-docker-compose logs prometheus
+docker compose logs prometheus
 
 # Restart
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
 ### Query returns "No Data"
@@ -359,10 +382,10 @@ docker-compose up -d
 ## Next Steps
 
 Congrats! You now have:
-- ✅ Prometheus running locally
-- ✅ System metrics being collected automatically
-- ✅ Written 5 real PromQL queries
-- ✅ Verified connectivity to all services
+- Prometheus running locally with a full 11-service stack
+- System, application, database, and cache metrics being collected automatically
+- Written 5 real PromQL queries
+- Verified connectivity to all services
 
 **Immediate Next:** Head to **Module 1, Day 1** to learn Prometheus architecture in depth. You've got the hands-on foundation. Now we'll explain what's happening under the hood.
 
@@ -373,10 +396,10 @@ Congrats! You now have:
 - Plan for capacity growth
 - Correlate multiple metrics for root cause analysis
 
-**To stop Prometheus when done:**
+**To stop the stack when done:**
 ```bash
 # From the labs/ directory
-docker-compose down
+docker compose down
 
 # Or use make
 make down
@@ -385,7 +408,7 @@ make down
 **To start it again later:**
 ```bash
 # From the labs/ directory
-docker-compose up -d
+docker compose up -d
 
 # Or use make
 make setup
@@ -395,9 +418,9 @@ make setup
 
 - [ ] Docker installed and running
 - [ ] Repository cloned
-- [ ] Containers started with `docker-compose up -d`
+- [ ] Containers started with `docker compose up -d`
 - [ ] http://localhost:9090 loads
-- [ ] Status → Targets shows at least 2 targets, both "UP"
+- [ ] Status → Targets shows 6+ targets, all "UP"
 - [ ] All 5 queries above execute without error
 - [ ] Understand what each query means (reread explanations if needed)
 
