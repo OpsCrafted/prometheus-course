@@ -93,7 +93,7 @@
         {
           "expr": "increase(http_requests_total[5m])",
           "refId": "A",
-          "legendFormat": "{{method}} {{path}} - {{status}}"
+          "legendFormat": "{{method}} {{endpoint}} - {{status}}"
         }
       ],
       "title": "HTTP Requests Total",
@@ -238,7 +238,7 @@
         {
           "expr": "histogram_quantile(0.99, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))",
           "refId": "A",
-          "legendFormat": "p99 - {{method}} {{path}}"
+          "legendFormat": "p99 - {{method}} {{endpoint}}"
         }
       ],
       "title": "Request Latency Histogram (p99)",
