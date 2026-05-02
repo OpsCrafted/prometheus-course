@@ -5,7 +5,7 @@
 
 ## Background
 
-Prometheus reads scrape configs from `prometheus.yml`. Our setup mounts a custom config in `labs/module-1-fundamentals/lab-1-prometheus.yml` so you can modify it and see changes live.
+Prometheus reads scrape configs from `prometheus.yml`. Docker Compose mounts `labs/prometheus.yml` into the Prometheus container at `/etc/prometheus/prometheus.yml`. You can modify this file and reload Prometheus to see changes take effect immediately.
 
 ## Lab: Add a Third Scrape Target
 
@@ -20,7 +20,7 @@ Prometheus reads scrape configs from `prometheus.yml`. Our setup mounts a custom
 **Step 1: Examine current config**
 
 ```bash
-cat labs/module-1-fundamentals/lab-1-prometheus.yml
+cat labs/prometheus.yml
 ```
 
 You should see:
@@ -30,11 +30,13 @@ scrape_configs:
     ...
   - job_name: 'node-exporter'
     ...
+  - job_name: 'sample-app'
+    ...
 ```
 
 **Step 2: Add sample-endpoint to the config**
 
-Edit `labs/module-1-fundamentals/lab-1-prometheus.yml` and add this after node-exporter:
+Edit `labs/prometheus.yml` and add this after the existing jobs:
 
 ```yaml
   - job_name: 'sample-endpoint'
@@ -86,7 +88,7 @@ See `labs/module-1-fundamentals/solutions/lab-1-solution.yml`
 - Still counts as a target
 
 **Can't edit .yml file:**
-- Make sure you're editing `labs/module-1-fundamentals/lab-1-prometheus.yml`, not the base config
+- Make sure you're editing `labs/prometheus.yml` in the labs directory
 
 **Metrics didn't change:**
 - May need to wait 15 seconds (scrape interval)
@@ -94,7 +96,7 @@ See `labs/module-1-fundamentals/solutions/lab-1-solution.yml`
 
 ## Exit Criteria
 
-- [ ] Modified lab-1-prometheus.yml
+- [ ] Modified labs/prometheus.yml
 - [ ] Curl reload returns HTTP 200
 - [ ] See 3 targets in Targets tab
 - [ ] `count(up)` returns 3
