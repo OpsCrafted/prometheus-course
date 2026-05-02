@@ -375,6 +375,41 @@ docker compose up -d
 - Check target status (Status → Targets)
 - Try a simple query like `up` first
 
+### Permission denied on prometheus-data volume
+
+**Error:** `Permission denied` when Docker tries to write to `./labs/prometheus-data`
+
+**Fix:**
+```bash
+# Ensure prometheus-data directory exists with correct permissions
+mkdir -p labs/prometheus-data
+chmod 777 labs/prometheus-data
+
+# If still failing, remove and restart
+docker compose down
+rm -rf labs/prometheus-data
+docker compose up -d
+```
+
+### Docker network conflict (ports already in use)
+
+**Error:** `cannot create network` or multiple port conflicts (9090, 3000, 5432, etc.)
+
+**Fix:**
+```bash
+# Stop all running containers
+docker compose down
+
+# Remove dangling networks
+docker network prune
+
+# Restart
+docker compose up -d
+
+# If still failing, check what's using these ports
+docker ps -a  # See all containers
+```
+
 ### Can't connect to http://localhost:9090 from another machine
 
 **Note:** Docker runs on localhost by default. You can only access it from your own machine. To expose Prometheus to other machines, see Day 1 of the course.
