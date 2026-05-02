@@ -31,26 +31,34 @@ histogram_quantile(0.99, http_request_duration_seconds_bucket)
 ```
 Result: 99th percentile latency
 
-**Query 5:** p95 by method
+**Query 5:** p95 over 5 minutes (correct aggregation)
 ```
 histogram_quantile(0.95,
-  sum(rate(http_request_duration_seconds_bucket[5m])) by (le, method))
+  sum by (le) (rate(http_request_duration_seconds_bucket[5m])))
 ```
-Result: p95 per HTTP method
+Result: p95 aggregated across all instances/methods
 
-**Query 6:** Multiple quantiles
+**Query 6:** p95 per endpoint
+```
+histogram_quantile(0.95,
+  sum by (le, endpoint) (rate(http_request_duration_seconds_bucket[5m])))
+```
+Result: p95 broken down per endpoint (le always included)
+
+**Query 7:** p99 with proper aggregation
 ```
 histogram_quantile(0.99,
-  rate(http_request_duration_seconds_bucket[5m]))
+  sum by (le) (rate(http_request_duration_seconds_bucket[5m])))
 ```
-Result: 99th percentile over 5 minutes
+Result: 99th percentile over 5 minutes (aggregated)
 
 ## Expected Results
 
-- Quantiles return latency values in seconds
-- p50 < p95 < p99
-- Must include "le" label in aggregation
+- Quantiles return latency values in seconds (e.g., 0.045 = 45ms)
+- p50 < p95 < p99 (percentiles increase monotonically)
+- Must include "le" label in aggregation via `sum by (le, ...)`
 - Rate histograms smooth over time window
+- Without `sum by(le)`, you'll get one result per label combination (wrong)
 
 ## Solution
 
@@ -58,7 +66,8 @@ See `labs/module-3-promql/solutions/lab-14-solution.md`
 
 ## Exit Criteria
 
-- [ ] Understand histogram buckets
-- [ ] Can calculate p50, p95, p99
-- [ ] Understand quantile aggregation
+- [ ] Understand histogram buckets and le label
+- [ ] Can calculate p50, p95, p99 with correct sum by(le) pattern
+- [ ] Understand why sum by(le) aggregation is critical
 - [ ] Know when to use rate with histograms
+- [ ] Can keep additional dimensions (endpoint, method) in aggregation while preserving le

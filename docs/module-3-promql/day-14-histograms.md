@@ -7,6 +7,7 @@
 - [ ] Query histogram buckets
 - [ ] Calculate percentiles with histogram_quantile()
 - [ ] Understand bucket semantics
+- [ ] Master the critical sum by(le) aggregation pattern
 
 ## Conceptual Explainer
 
@@ -40,6 +41,8 @@ histogram_quantile(0.95, http_request_duration_seconds_bucket)
 Result: 95th percentile (p95)
 
 The 0.95 means "95th percentile" (range: 0.0 to 1.0)
+
+**Important:** The `le` label MUST be present in the aggregation. histogram_quantile() uses bucket boundaries to interpolate percentiles.
 
 ### Computing Percentiles
 
@@ -82,13 +85,57 @@ histogram_quantile(0.99, http_request_duration_seconds_bucket)
 
 Shows 99th percentile latency.
 
-**Step 5:** p95 by method:
+**Step 5:** p95 over 5 minutes with proper aggregation:
 
 ```
-histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, method))
+histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))
 ```
 
-Shows p95 per HTTP method.
+Shows p95 for the service (aggregated across all instances/methods).
+
+**Step 6:** p95 by endpoint (keeping endpoint dimension):
+
+```
+histogram_quantile(0.95, sum by (le, endpoint) (rate(http_request_duration_seconds_bucket[5m])))
+```
+
+Shows p95 per endpoint (le must always be included).
+
+## Critical: The sum by(le) Aggregation Pattern
+
+This is the most important concept in histogram queries.
+
+### Why sum by(le) is Essential
+
+When you use `rate()` on a histogram, Prometheus expands it to include ALL labels:
+```
+rate(http_request_duration_seconds_bucket[5m])
+# Returns: {le="0.005", instance="a", method="GET"}, {le="0.01", instance="a", method="GET"}, ...
+```
+
+`histogram_quantile()` needs **only the le label** because it interpolates between bucket boundaries. If you keep other labels, you get one percentile per unique label combination (noisy and wrong).
+
+### The Pattern
+
+**CORRECT:** Always use `sum by (le)` before histogram_quantile:
+```
+histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))
+```
+
+**WRONG:** Missing sum by(le) - will produce incorrect results:
+```
+histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
+# INCORRECT - doesn't aggregate buckets properly
+```
+
+### Keeping Other Dimensions
+
+If you want p95 **per endpoint**, keep that label in sum:
+```
+histogram_quantile(0.95, sum by (le, endpoint) (rate(http_request_duration_seconds_bucket[5m])))
+```
+
+The rule: **Always include `le` in the sum, optionally add other dimensions you want to preserve.**
 
 ## Key Concepts
 
@@ -98,11 +145,11 @@ Shows p95 per HTTP method.
 - 0.99 = 99th percentile
 - 0.999 = 99.9th percentile
 
-**Must include "le" label:** For `histogram_quantile()` to work, the `le` label must be in the result.
+**Must include "le" label:** For `histogram_quantile()` to work, the `le` label must be in the result set after aggregation.
 
-**Rate histogram:** For time ranges, use rate:
+**Rate histogram:** For time ranges, always use rate with sum by(le):
 ```
-histogram_quantile(0.95, rate(metric_bucket[5m]))
+histogram_quantile(0.95, sum by (le) (rate(metric_bucket[5m])))
 ```
 
 ## Reference
@@ -120,6 +167,45 @@ histogram_quantile(0.99, metric)  # p99
 histogram_quantile(0.999, metric) # p99.9
 ```
 
+## Common Mistakes
+
+### Mistake 1: Forgetting sum by(le)
+```
+# WRONG
+histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
+```
+Result: One percentile per label combination (confusing noise)
+
+Fix: Add `sum by (le)`:
+```
+# CORRECT
+histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))
+```
+
+### Mistake 2: Using by() instead of sum by()
+```
+# UNCLEAR (might not work as expected)
+histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]) by (le, instance))
+```
+
+Fix: Use `sum by()`:
+```
+# CORRECT
+histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))
+```
+
+### Mistake 3: Forgetting rate() entirely
+```
+# Static snapshot (old data)
+histogram_quantile(0.95, sum by (le) (http_request_duration_seconds_bucket))
+```
+
+Fix: Add `rate()` for current window:
+```
+# CORRECT
+histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))
+```
+
 ## Lab
 
 See [lab-14-histograms.md](../../labs/module-3-promql/lab-14-histograms.md)
@@ -128,5 +214,6 @@ See [lab-14-histograms.md](../../labs/module-3-promql/lab-14-histograms.md)
 
 - [ ] Understand histogram buckets
 - [ ] Know how to calculate percentiles
-- [ ] Can query p50, p95, p99
-- [ ] Understand aggregation with histograms
+- [ ] Can query p50, p95, p99 with correct sum by(le)
+- [ ] Understand why sum by(le) is critical for aggregation
+- [ ] Know how to keep additional dimensions (endpoint, method, etc)
