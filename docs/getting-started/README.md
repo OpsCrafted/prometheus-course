@@ -111,6 +111,31 @@ You should see:
 - `prometheus.yml` — Prometheus scrape configuration
 - `setup.sh` — Helper script
 
+## Step 2b: Using Make Commands (Optional but Recommended)
+
+From the course root directory, you can use the Makefile for quick commands:
+
+```bash
+# Start the entire environment
+make setup
+
+# Verify all services are running
+make verify
+
+# View logs for debugging
+make logs-prometheus
+make logs-grafana
+make logs-app
+
+# Stop everything
+make down
+
+# Full cleanup (removes data volumes)
+make clean
+```
+
+If you prefer direct Docker commands, proceed to Step 3 below.
+
 ## Step 3: Start Prometheus
 
 ```bash
@@ -140,6 +165,33 @@ labs-node-exporter-1       "/bin/node_exporter"      Up 2 minutes    0.0.0.0:910
 ```
 
 Both should be "Up". If either shows "Exited", see Troubleshooting below.
+
+## Step 3b: Testing Your Environment
+
+Before proceeding to queries, verify connectivity to your running services:
+
+**Test Prometheus is accessible:**
+```bash
+curl http://localhost:9090
+```
+
+Expected output: HTML page (Prometheus UI HTML)
+
+**Test Node Exporter metrics:**
+```bash
+curl http://localhost:9100/metrics | head -20
+```
+
+Expected output: Lines starting with `# HELP` and `# TYPE` followed by metric data.
+
+**Test Prometheus is scraping metrics:**
+```bash
+curl http://localhost:9090/api/v1/query?query=up
+```
+
+Expected output: JSON with targets status (should see `prometheus` and `node-exporter` with value `1`).
+
+If any curl command fails, review Troubleshooting section below.
 
 ## Step 4: Open Prometheus UI
 
@@ -307,21 +359,36 @@ docker-compose up -d
 ## Next Steps
 
 Congrats! You now have:
-- ✅ Prometheus running
-- ✅ System metrics being collected
+- ✅ Prometheus running locally
+- ✅ System metrics being collected automatically
 - ✅ Written 5 real PromQL queries
+- ✅ Verified connectivity to all services
 
-**Next:** Head to **Module 1, Day 1** to learn Prometheus architecture in depth. You've got the hands-on foundation. Now we'll explain what's happening under the hood.
+**Immediate Next:** Head to **Module 1, Day 1** to learn Prometheus architecture in depth. You've got the hands-on foundation. Now we'll explain what's happening under the hood.
+
+**Later:** After completing Days 9-12 (PromQL fundamentals), tackle **Module 3, Day 15: Capstone Scenarios**. These 5 real-world challenges will teach you to:
+- Debug latency spikes and cardinality explosions
+- Analyze request rates and error patterns
+- Monitor SLOs (Service Level Objectives)
+- Plan for capacity growth
+- Correlate multiple metrics for root cause analysis
 
 **To stop Prometheus when done:**
 ```bash
+# From the labs/ directory
 docker-compose down
+
+# Or use make
+make down
 ```
 
 **To start it again later:**
 ```bash
 # From the labs/ directory
 docker-compose up -d
+
+# Or use make
+make setup
 ```
 
 ## Summary Checklist

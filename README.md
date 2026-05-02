@@ -1,4 +1,4 @@
-# 📊 Prometheus + PromQL + OpenTelemetry Course
+# 📊 Prometheus + PromQL Course
 
 Master monitoring and observability in 2-3 weeks. Self-paced hands-on course for DevOps/SRE engineers.
 
@@ -13,7 +13,8 @@ By the end of this course, you'll be able to:
 - ✅ Instrument Go applications with custom metrics
 - ✅ Design effective monitoring strategies for production systems
 - ✅ Build dashboards that answer real operational questions
-- ✅ Debug monitoring issues and optimize metric collection
+- ✅ Debug production monitoring issues using real incident scenarios
+- ✅ Diagnose and resolve monitoring problems in complex systems
 
 ---
 
@@ -139,10 +140,10 @@ Track your progress:
   - Custom metrics exported to Prometheus
   - Dashboard shows your metrics
 
-- [ ] **Week 3:** Complete Days 9-15 (PromQL + Capstone)
+- [ ] **Week 3:** Complete Days 9-15 (PromQL + Capstone Scenarios)
   - Write 10+ different PromQL queries
-  - Pass all 3 capstone challenges
-  - Build a custom dashboard
+  - Solve all 5 capstone scenarios (Health Check, Request Analysis, SLA Monitoring, Capacity Planning, Multi-metric Correlation)
+  - Build a custom dashboard from scratch
 
 ---
 
