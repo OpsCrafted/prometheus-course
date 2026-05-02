@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -15,13 +16,13 @@ import (
 )
 
 var (
-	// Counter: total HTTP requests with method and endpoint labels
+	// Counter: total HTTP requests with method, endpoint, and status labels
 	httpRequestsTotal = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "http_requests_total",
 			Help: "Total number of HTTP requests",
 		},
-		[]string{"method", "endpoint"},
+		[]string{"method", "endpoint", "status"},
 	)
 
 	// Gauge: active connections
@@ -50,23 +51,33 @@ func init() {
 	prometheus.MustRegister(httpRequestDurationSeconds)
 }
 
+// statusRecorder wraps http.ResponseWriter to capture the HTTP status code
+type statusRecorder struct {
+	http.ResponseWriter
+	status int
+}
+
+func (r *statusRecorder) WriteHeader(code int) {
+	r.status = code
+	r.ResponseWriter.WriteHeader(code)
+}
+
 // instrumentedHandler wraps an HTTP handler with Prometheus instrumentation
 func instrumentedHandler(endpoint string, handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Wrap the response writer to capture status code
+		recorder := &statusRecorder{ResponseWriter: w, status: 200}
+
 		// Increment active connections
 		activeConnections.Inc()
 		defer activeConnections.Dec()
 
 		// Record request metrics
 		start := time.Now()
-		defer func() {
-			duration := time.Since(start).Seconds()
-			httpRequestsTotal.WithLabelValues(r.Method, endpoint).Inc()
-			httpRequestDurationSeconds.WithLabelValues(endpoint).Observe(duration)
-		}()
-
-		// Call the actual handler
-		handler(w, r)
+		handler(recorder, r)
+		duration := time.Since(start).Seconds()
+		httpRequestsTotal.WithLabelValues(r.Method, endpoint, strconv.Itoa(recorder.status)).Inc()
+		httpRequestDurationSeconds.WithLabelValues(endpoint).Observe(duration)
 	}
 }
 
