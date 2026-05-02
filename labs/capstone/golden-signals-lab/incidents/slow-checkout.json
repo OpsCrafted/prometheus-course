@@ -1,0 +1,13 @@
+{
+  "scenario": "checkout_slowness",
+  "description": "The checkout service p95 latency spiked from 100ms to 1500ms over a 30-minute window. Traffic volume and HTTP error rate remained unchanged from baseline. Investigation revealed abnormally high disk read throughput on the primary database host, caused by unoptimized queries performing full table scans against a growing orders table.",
+  "key_metrics": {
+    "latency_p95_ms": 1500,
+    "latency_baseline_ms": 100,
+    "traffic_req_per_sec": 10,
+    "error_rate_percent": 1,
+    "disk_read_throughput_mb_per_sec": 500,
+    "cpu_usage_percent": 30
+  },
+  "root_cause": "Database slow queries causing high disk I/O"
+}
