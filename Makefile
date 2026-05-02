@@ -1,4 +1,4 @@
-.PHONY: setup verify down clean logs-prometheus logs-grafana logs-app help
+.PHONY: setup verify down clean logs-prometheus logs-grafana logs-app verify-rules help
 
 help:
 	@echo "Prometheus Course — Available targets:"
@@ -30,5 +30,8 @@ logs-grafana:
 
 logs-app:
 	cd labs && docker compose logs -f sample-app
+
+verify-rules:
+	docker compose exec prometheus promtool check rules /etc/prometheus/alert_rules.yml
 
 .DEFAULT_GOAL := help
