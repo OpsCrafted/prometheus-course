@@ -440,6 +440,20 @@ docker compose down
 make down
 ```
 
+**To do a complete cleanup (remove volumes, clear old data):**
+```bash
+# IMPORTANT: The -v flag removes volumes (old data, configs)
+# Use this if metrics seem stale or configs aren't updating
+docker compose down -v
+
+# This removes:
+# - prometheus-data/ (TSDB chunks)
+# - grafana-data/ (dashboards, datasources)
+# - postgres-data/ (database)
+
+# Warning: This deletes all local monitoring data. Only use if starting fresh.
+```
+
 **To start it again later:**
 ```bash
 # From the labs/ directory
