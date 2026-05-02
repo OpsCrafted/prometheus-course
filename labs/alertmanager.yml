@@ -1,3 +1,7 @@
+# Alertmanager configuration for local lab use.
+# The 'null' receiver silently drops all alerts. In production,
+# replace this with a real receiver (slack_configs, webhook_configs, etc.)
+
 global:
   resolve_timeout: 5m
 

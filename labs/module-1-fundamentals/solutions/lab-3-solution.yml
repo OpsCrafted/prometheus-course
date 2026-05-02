@@ -11,13 +11,13 @@ scrape_configs:
     static_configs:
       - targets: ['node-exporter:9100']
 
-  - job_name: 'redis'
+  - job_name: 'redis-exporter'
     static_configs:
-      - targets: ['localhost:6379']
+      - targets: ['redis-exporter:9121']
 
-  - job_name: 'mysql'
+  - job_name: 'postgres-exporter'
     static_configs:
-      - targets: ['localhost:3306']
+      - targets: ['postgres-exporter:9187']
 
   - job_name: 'my-app'
     static_configs:

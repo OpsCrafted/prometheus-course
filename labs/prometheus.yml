@@ -1,5 +1,6 @@
 global:
   scrape_interval: 15s
+  scrape_timeout: 10s
   evaluation_interval: 15s
 
 alerting:
@@ -7,6 +8,9 @@ alerting:
     - static_configs:
         - targets:
             - alertmanager:9093
+
+rule_files:
+  # - alert_rules.yml     # future: alerting rules
 
 scrape_configs:
   - job_name: 'prometheus'
@@ -39,7 +43,16 @@ scrape_configs:
           group: 'cache'
 
   - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
     static_configs:
-      - targets: ['localhost:9115']
-        labels:
-          group: 'monitoring'
+      - targets:
+          - http://sample-app:8080
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - replacement: blackbox-exporter:9115
+        target_label: __address__
