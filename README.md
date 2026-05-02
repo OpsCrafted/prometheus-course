@@ -210,6 +210,16 @@ You'll have hands-on experience with the monitoring stack used in production sys
 
 ---
 
+## ☕ Support This Course
+
+Enjoying this course? Consider supporting future development and maintenance:
+
+[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-ffdd00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/opscrafted)
+
+Your support helps keep this course free and continuously updated.
+
+---
+
 **Ready?** [Start with Getting Started](docs/getting-started/README.md) → 2-3 hours, hands-on, no prerequisites beyond Docker.
 
 Happy monitoring! 📈
