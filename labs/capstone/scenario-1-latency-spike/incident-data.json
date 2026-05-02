@@ -1,0 +1,40 @@
+{
+  "scenario": "latency-spike",
+  "title": "Incident: Request Latency Spike",
+  "description": "Request latency increased 20x starting at 14:32:00 UTC",
+  "timeline": {
+    "14:30:00": "Normal operations",
+    "14:31:50": "Deployment of new database query optimization (contains bug)",
+    "14:32:00": "Latency spike begins, p95 jumps from 100ms to 1850ms",
+    "14:33:00": "Spike continues at 2100ms, on-call engineer alerted"
+  },
+  "metrics": [
+    {
+      "timestamp": "14:30:00",
+      "p95_latency_ms": 95,
+      "requests_per_sec": 120,
+      "status": "normal"
+    },
+    {
+      "timestamp": "14:31:00",
+      "p95_latency_ms": 110,
+      "requests_per_sec": 125,
+      "status": "normal"
+    },
+    {
+      "timestamp": "14:32:00",
+      "p95_latency_ms": 1850,
+      "requests_per_sec": 118,
+      "status": "SPIKE"
+    },
+    {
+      "timestamp": "14:33:00",
+      "p95_latency_ms": 2100,
+      "requests_per_sec": 115,
+      "status": "SPIKE"
+    }
+  ],
+  "root_cause": "Deployment at 14:31:50 introduced a slow database query that was not caught in testing",
+  "impact": "Users experience 20x slower API responses",
+  "detection_difficulty": "The current PromQL query with increase() and [1m] window makes the spike hard to see in graphs"
+}

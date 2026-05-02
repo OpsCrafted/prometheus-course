@@ -1,0 +1,92 @@
+{
+  "scenario": "partial-outage",
+  "title": "Incident: Missing Metrics from Partial Outage",
+  "description": "node-exporter target is DOWN, system metrics unavailable",
+  "problem": "Configuration typo: localhost:9101 instead of localhost:9100",
+  "targets_api_response": {
+    "status": "success",
+    "data": {
+      "activeTargets": [
+        {
+          "job": "prometheus",
+          "state": "UP",
+          "labels": {
+            "job": "prometheus",
+            "instance": "localhost:9090"
+          },
+          "scrape_url": "http://localhost:9090/metrics",
+          "lastError": "",
+          "lastScrape": "2025-05-02T14:33:42Z"
+        },
+        {
+          "job": "sample-app",
+          "state": "UP",
+          "labels": {
+            "job": "sample-app",
+            "instance": "sample-app:8080",
+            "group": "application"
+          },
+          "scrape_url": "http://sample-app:8080/metrics",
+          "lastError": "",
+          "lastScrape": "2025-05-02T14:33:41Z"
+        },
+        {
+          "job": "node-exporter",
+          "state": "DOWN",
+          "labels": {
+            "job": "node-exporter",
+            "instance": "localhost:9101",
+            "group": "system"
+          },
+          "scrape_url": "http://localhost:9101/metrics",
+          "lastError": "connection refused",
+          "lastScrape": "2025-05-02T14:32:15Z"
+        },
+        {
+          "job": "postgres-exporter",
+          "state": "UP",
+          "labels": {
+            "job": "postgres-exporter",
+            "instance": "postgres-exporter:9187",
+            "group": "database"
+          },
+          "scrape_url": "http://postgres-exporter:9187/metrics",
+          "lastError": "",
+          "lastScrape": "2025-05-02T14:33:40Z"
+        },
+        {
+          "job": "redis-exporter",
+          "state": "UP",
+          "labels": {
+            "job": "redis-exporter",
+            "instance": "redis-exporter:9121",
+            "group": "cache"
+          },
+          "scrape_url": "http://redis-exporter:9121/metrics",
+          "lastError": "",
+          "lastScrape": "2025-05-02T14:33:39Z"
+        }
+      ],
+      "droppedTargets": []
+    }
+  },
+  "impact": {
+    "missing_metrics": [
+      "node_cpu_seconds_total",
+      "node_memory_MemAvailable_bytes",
+      "node_filesystem_avail_bytes",
+      "node_disk_io_reads_total"
+    ],
+    "affected_dashboards": [
+      "System Overview (CPU, Memory, Disk)",
+      "Node Health",
+      "Resource Usage"
+    ]
+  },
+  "diagnosis_steps": [
+    "Visit http://localhost:9090/api/v1/targets",
+    "Look for DOWN targets",
+    "Check lastError for connection message",
+    "Compare scrape_url to actual service address"
+  ]
+}

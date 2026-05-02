@@ -1,0 +1,72 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+rule_files:
+  # - alert_rules.yml     # future: alerting rules
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          group: 'system'
+
+  - job_name: 'sample-app'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['sample-app:8080']
+        labels:
+          group: 'application'
+
+  - job_name: 'postgres-exporter'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          group: 'database'
+
+  - job_name: 'redis-exporter'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          group: 'cache'
+
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - http://sample-app:8080
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - replacement: blackbox-exporter:9115
+        target_label: __address__
+
+# ============================================
+# BROKEN LATENCY QUERY - DO NOT USE
+# ============================================
+# This query is broken because:
+# 1. It uses increase() instead of rate() - no time normalization
+# 2. It uses [1m] window - too short, loses signal
+# Result: Latency trends are invisible!
+#
+# BROKEN QUERY:
+# histogram_quantile(0.95, sum by (le) (increase(http_request_duration_seconds_bucket[1m]))) * 1000
+#
+# This should be:
+# histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m]))) * 1000

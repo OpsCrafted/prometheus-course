@@ -1,0 +1,74 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+rule_files:
+  # - alert_rules.yml     # future: alerting rules
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          group: 'system'
+
+  - job_name: 'sample-app'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['sample-app:8080']
+        labels:
+          group: 'application'
+    # BROKEN: No relabel_configs to drop high-cardinality labels!
+    # This allows request_id and trace_id to be ingested as labels
+    # Result: Every unique request creates a new time series
+
+  - job_name: 'postgres-exporter'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          group: 'database'
+
+  - job_name: 'redis-exporter'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          group: 'cache'
+
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - http://sample-app:8080
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - replacement: blackbox-exporter:9115
+        target_label: __address__
+
+# ============================================
+# CARDINALITY EXPLOSION PROBLEM
+# ============================================
+# The sample-app is exporting metrics with labels:
+#   http_request_duration_seconds{method="GET", path="/api/users", request_id="abc123", ...}
+#   http_request_duration_seconds{method="GET", path="/api/users", request_id="xyz789", ...}
+#
+# With millions of unique request_ids, each creates a separate time series!
+# This metadata should never be a label - it belongs in logs.
+#
+# Same problem with trace_id, session_id, user_hash, etc.
+# These are unbounded labels that destroy the TSDB.

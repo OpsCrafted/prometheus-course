@@ -1,0 +1,51 @@
+{
+  "scenario": "cardinality-explosion",
+  "title": "Incident: Memory Explosion from Cardinality",
+  "description": "Unique series count grew from 50K to 5M in 8 hours after deployment",
+  "timeline": {
+    "00:00": "Deployment of new tracing feature that adds request_id and trace_id to metrics",
+    "00:00-04:00": "Series count climbs to 500K, memory at 800MB",
+    "04:00-08:00": "Exponential growth continues, series reach 5M, memory at 3.2GB",
+    "08:30": "Prometheus becomes unresponsive, on-call engineer investigating"
+  },
+  "metrics": [
+    {
+      "timestamp": "00:00",
+      "unique_series": 50000,
+      "memory_mb": 400,
+      "status": "normal"
+    },
+    {
+      "timestamp": "04:00",
+      "unique_series": 500000,
+      "memory_mb": 800,
+      "status": "growth"
+    },
+    {
+      "timestamp": "08:00",
+      "unique_series": 5000000,
+      "memory_mb": 3200,
+      "status": "critical"
+    }
+  ],
+  "problematic_labels": [
+    {
+      "label": "request_id",
+      "cardinality": 2000000,
+      "uniqueness": "Every request gets a different value",
+      "impact": "Creates 2M separate time series per metric"
+    },
+    {
+      "label": "trace_id",
+      "cardinality": 1500000,
+      "uniqueness": "Distributed tracing generates unique IDs",
+      "impact": "Creates 1.5M separate time series per metric"
+    }
+  ],
+  "example_metrics": [
+    "http_request_duration_seconds{method=\"GET\", path=\"/api/users\", request_id=\"req-abc123\"}",
+    "http_request_duration_seconds{method=\"GET\", path=\"/api/users\", request_id=\"req-xyz789\"}",
+    "http_request_duration_seconds{method=\"GET\", path=\"/api/users\", request_id=\"req-def456\"}"
+  ],
+  "analysis": "Each unique request_id creates a new time series. With 2M requests/hour and 8 hours = 16M request_ids, metrics explosion is inevitable"
+}

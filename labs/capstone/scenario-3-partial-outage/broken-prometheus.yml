@@ -1,0 +1,67 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+rule_files:
+  # - alert_rules.yml     # future: alerting rules
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node-exporter'
+    static_configs:
+      # BROKEN: Wrong port! Should be 9100 but typo made it 9101
+      - targets: ['localhost:9101']
+        labels:
+          group: 'system'
+
+  - job_name: 'sample-app'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['sample-app:8080']
+        labels:
+          group: 'application'
+
+  - job_name: 'postgres-exporter'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          group: 'database'
+
+  - job_name: 'redis-exporter'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          group: 'cache'
+
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - http://sample-app:8080
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - replacement: blackbox-exporter:9115
+        target_label: __address__
+
+# ============================================
+# PARTIAL OUTAGE PROBLEM
+# ============================================
+# node-exporter is running on localhost:9100
+# but Prometheus is trying to scrape localhost:9101
+# Connection will fail with "connection refused"
+# Result: All system metrics disappear from dashboards
