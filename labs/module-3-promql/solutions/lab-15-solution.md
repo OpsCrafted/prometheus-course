@@ -30,8 +30,8 @@ Result: 0.02 req/sec
 
 **By path:**
 ```
-sum(rate(http_requests_total[5m])) by (path)
-Result: {path="/hello"} 0.02
+sum(rate(http_requests_total[5m])) by (endpoint)
+Result: {endpoint="/"} 0.02
 ```
 
 **Success rate:**

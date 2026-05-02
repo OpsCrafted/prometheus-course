@@ -37,11 +37,11 @@ http_requests_total
 ```
 Result: All requests
 
-**Query 6:** Specific request path
+**Query 6:** Specific request endpoint
 ```
-http_requests_total{path="/hello"}
+http_requests_total{endpoint="/"}
 ```
-Result: Requests for /hello path only
+Result: Requests for / endpoint only
 
 **Query 7:** Regex filter (methods starting with G)
 ```

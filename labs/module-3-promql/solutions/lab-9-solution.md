@@ -29,18 +29,18 @@ node_memory_MemFree_bytes{instance="node-exporter:9100",job="node-exporter"}  21
 
 **Query 5:** `http_requests_total`
 ```
-http_requests_total{method="GET",path="/hello",status="200"}  5
+http_requests_total{method="GET",endpoint="/",status="200"}  5
 ```
 (If app running)
 
-**Query 6:** `http_requests_total{path="/hello"}`
+**Query 6:** `http_requests_total{endpoint="/"}`
 ```
-http_requests_total{method="GET",path="/hello",status="200"}  5
+http_requests_total{method="GET",endpoint="/",status="200"}  5
 ```
 
 **Query 7:** `http_requests_total{method=~"G.*"}`
 ```
-http_requests_total{method="GET",path="/hello",status="200"}  5
+http_requests_total{method="GET",endpoint="/",status="200"}  5
 ```
 
 ## Key Points

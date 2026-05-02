@@ -32,7 +32,7 @@ count(up) - count(up == 1) # Count DOWN targets
 **Solution:**
 ```
 rate(http_requests_total[5m])                                    # Total/sec
-sum(rate(http_requests_total[5m])) by (path)                    # By path
+sum(rate(http_requests_total[5m])) by (endpoint)                # By endpoint
 rate(http_requests_total{status="200"}[5m]) /
   rate(http_requests_total[5m])                                  # Success %
 rate(http_requests_total{status=~"5.."}[5m]) /
