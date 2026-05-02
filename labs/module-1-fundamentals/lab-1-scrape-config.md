@@ -5,7 +5,7 @@
 
 ## Background
 
-Prometheus reads scrape configs from `prometheus.yml`. Docker Compose mounts `labs/prometheus.yml` into the Prometheus container at `/etc/prometheus/prometheus.yml`. You can modify this file and reload Prometheus to see changes take effect immediately.
+Prometheus reads scrape configs from `prometheus.yml`. Docker Compose mounts `labs/prometheus.yml` into the Prometheus container at `/etc/prometheus/prometheus.yml`. Since docker-compose.yml runs from the labs/ directory, the mount path `./prometheus.yml` refers to the file at `labs/prometheus.yml` from the course root. You can modify this file and reload Prometheus to see changes take effect immediately.
 
 ## Lab: Add a Third Scrape Target
 
