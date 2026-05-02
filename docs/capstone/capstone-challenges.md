@@ -1,106 +1,89 @@
-# Prometheus Capstone Challenges
+# Capstone Challenges: Production Incident Scenarios
 
-**Time:** 3-4 hours total | **Prerequisites:** All modules completed
+**Estimated time:** 4-6 hours (1-2 hours per scenario)
 
-## Overview
+After completing Modules 1-3, tackle three real-world monitoring incidents. Each scenario teaches you to think like an on-call engineer: detect problems in real data, diagnose root cause, and fix monitoring.
 
-Three challenge sets that integrate multiple modules:
+## Prerequisites
 
-1. Setup Challenge — Configure and instrument a complete system
-2. Monitoring Challenge — Build dashboards and alerts
-3. Troubleshooting Challenge — Diagnose and fix production issues
+- Complete all three modules (Days 1-15)
+- Docker environment running (`make setup`)
+- Comfortable with PromQL queries and Prometheus config
 
-## Challenge Set 1: Complete System Setup
+---
 
-Scenario: You're building monitoring for a 3-tier microservice architecture.
+## Scenario 1: Latency Spike
 
-Components:
-- API server (Go app with metrics)
-- Database (needs monitoring)
-- Cache (Redis-like)
+**Location:** `labs/capstone/scenario-1-latency-spike/`
 
-Tasks:
-1. Create 3 Go apps, each with Prometheus instrumentation
-2. Add 3 jobs to prometheus.yml
-3. Define metrics on each app:
-   - http_requests_total (counter with status)
-   - http_request_duration_seconds (histogram)
-   - app_connected_clients (gauge)
-4. Verify all metrics appear in Prometheus UI
-5. Write 5 queries to analyze the system:
-   - Total requests per second
-   - p95 latency per service
-   - Service health (UP/DOWN)
-   - Error rate by service
-   - Client connections by service
+**What happens:** Requests to sample app suddenly take 10-20x longer. Dashboard shows traffic is normal. Root cause is subtle.
 
-Estimated time: 60-75 minutes
+**What you'll learn:**
+- How to detect latency anomalies with `histogram_quantile()`
+- Correlate latency with other metrics (CPU, disk I/O, database queries)
+- Distinguish between app-level and infrastructure issues
 
-## Challenge Set 2: Dashboard & Alerts
+**Time estimate:** 1-2 hours
 
-Scenario: Create a monitoring dashboard and alert rules.
+---
 
-Tasks:
-1. Create Grafana dashboard with:
-   - Request rate gauge
-   - p95 latency time-series
-   - Error rate graph
-   - Target UP/DOWN status
-   - Request volume heatmap
-2. Create 4 alert rules:
-   - Alert: Any target is DOWN
-   - Alert: Error rate > 5%
-   - Alert: p95 latency > 100ms
-   - Alert: Request rate dropped by 50% (potential outage)
-3. Test alerts with synthetic traffic
+## Scenario 2: Cardinality Explosion
 
-Estimated time: 75-90 minutes
+**Location:** `labs/capstone/scenario-2-cardinality-explosion/`
 
-## Challenge Set 3: Troubleshooting
+**What happens:** Prometheus runs out of memory. TSDB stops accepting new series.
 
-Scenario: A production system has degraded performance.
+**What you'll learn:**
+- How unbounded labels cause metric cardinality to explode
+- Debug cardinality issues in Prometheus
+- Apply label design best practices to fix instrumentation
 
-Given:
-- Prometheus data from degrading system
-- Pre-written PromQL queries
-- System logs (simulated)
+**Time estimate:** 1-2 hours
 
-Tasks:
-1. Identify what metric indicates the problem
-2. Root cause: Is it latency, error rate, traffic, or database?
-3. Correlate metrics to find cause
-4. Recommend fix
-5. Verify fix works (in simulation)
+---
 
-Estimated time: 60-75 minutes
+## Scenario 3: Partial Outage
 
-## Evaluation Criteria
+**Location:** `labs/capstone/scenario-3-partial-outage/`
 
-Challenge 1:
-- [ ] All 3 apps running with metrics
-- [ ] All 9 metrics defined (3 per app)
-- [ ] All targets UP in Prometheus
-- [ ] All 5 queries work correctly
-- [ ] Results make sense
+**What happens:** Some scrape targets fail silently. Dashboards show partial data. Alerts don't fire correctly.
 
-Challenge 2:
-- [ ] Dashboard has 5 panels
-- [ ] All 4 alert rules created
-- [ ] Rules correctly aggregate metrics
-- [ ] Can trigger at least 1 alert
-- [ ] Dashboard displays correctly
+**What you'll learn:**
+- Detect missing scrape targets with `up` metric
+- Troubleshoot scrape config and relabel rules
+- Use alerting to catch scrapes that fail
 
-Challenge 3:
-- [ ] Identified problem metric
-- [ ] Root cause analysis complete
-- [ ] Metrics correlated correctly
-- [ ] Fix verified with query
-- [ ] Documentation clear
+**Time estimate:** 1-2 hours
+
+---
+
+## How to Work Through a Scenario
+
+Each scenario directory contains:
+- `incident-data/` — pre-recorded metrics simulating the incident
+- `README.md` — scenario setup and guided questions
+- `solution/` — expected PromQL queries and fixes
+- `verify.sh` — script to check your work
+
+**Process:**
+1. Read the scenario README
+2. Load incident data into your Prometheus
+3. Answer guided questions using PromQL
+4. Compare your queries against solution/
+5. Implement recommended fixes in your config
+
+---
+
+## Success Criteria
+
+- [ ] Scenario 1: Write 3+ PromQL queries detecting the latency spike
+- [ ] Scenario 2: Identify root cause (high cardinality label)
+- [ ] Scenario 3: Fix scrape config and verify all targets UP
+
+---
 
 ## Next Steps
 
-After completing challenges:
-- Deploy to production-like environment
-- Build runbooks for alerts
-- Create SLOs based on metrics
-- Set up on-call rotation
+After capstone, you're ready for real production monitoring work. Revisit Prometheus docs for advanced topics like federation, long-term storage, and Alertmanager routing.
+
+Happy monitoring!
