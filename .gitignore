@@ -2,3 +2,9 @@ labs/prometheus-data/
 .superpowers/
 *.swp
 .DS_Store
+.git/
+.gocache/
+__pycache__/
+*.pyc
+node_modules/
+.vscode/
