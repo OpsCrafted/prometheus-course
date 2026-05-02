@@ -1,0 +1,13 @@
+{
+  "explanation": "Prometheus TSDB containing 500M time-series due to user_id label",
+  "problematic_metric": "requests_total{method, user_id, endpoint, status}",
+  "cardinality_by_label": {
+    "user_id": 1000000,
+    "endpoint": 100,
+    "method": 5,
+    "status": 5
+  },
+  "total_series": 500000000,
+  "estimated_memory_gb": 50,
+  "fix": "Remove user_id label, use only {method, endpoint, status}"
+}
