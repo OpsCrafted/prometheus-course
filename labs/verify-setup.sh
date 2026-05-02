@@ -2,6 +2,7 @@
 # Validation script for Prometheus course setup
 
 set -e
+cd "$(dirname "$0")"
 
 echo "=== Prometheus Course Setup Validator ==="
 echo ""
@@ -51,6 +52,15 @@ else
     exit 1
 fi
 
+# Check curl availability
+echo -n "Checking curl... "
+if command -v curl &> /dev/null; then
+    success "installed"
+else
+    fail "curl is required but not installed."
+    exit 1
+fi
+
 # Check docker-compose.yml validity
 echo -n "Validating docker-compose.yml... "
 if docker compose config > /dev/null 2>&1; then
@@ -62,9 +72,16 @@ fi
 
 # Start services
 echo -n "Starting Docker Compose services... "
-docker compose up -d > /dev/null 2>&1
-success "started (waiting for services to be ready...)"
-sleep 6
+docker compose up -d || { fail "docker compose up failed"; exit 1; }
+success "started (waiting for Prometheus to be ready...)"
+
+for i in $(seq 1 15); do
+  if curl -s --max-time 2 --connect-timeout 2 "http://localhost:9090/-/ready" > /dev/null 2>&1; then
+    break
+  fi
+  [ "$i" -eq 15 ] && { fail "Prometheus not ready after 30s"; exit 1; }
+  sleep 2
+done
 
 # Check services are running
 echo -n "Checking service status... "
@@ -77,7 +94,7 @@ fi
 
 # Check Prometheus health
 echo -n "Checking Prometheus health... "
-if curl -s http://localhost:9090/api/v1/query?query=up | grep -q prometheus; then
+if curl -s --max-time 5 "http://localhost:9090/api/v1/query?query=up" | grep -q prometheus; then
     success "responding"
 else
     fail "Prometheus not responding. Check: docker compose logs prometheus"
@@ -86,7 +103,7 @@ fi
 
 # Check for at least 2 UP targets
 echo -n "Checking Prometheus targets... "
-TARGET_COUNT=$(curl -s http://localhost:9090/api/v1/query?query=up | grep -o '"value":\[.*"[01]"' | wc -l)
+TARGET_COUNT=$(curl -s --max-time 5 "http://localhost:9090/api/v1/query?query=up" | jq '[.data.result[] | select(.value[1]=="1")] | length // 0' 2>/dev/null || curl -s --max-time 5 "http://localhost:9090/api/v1/query?query=up" | grep -o '"value":\[[^]]*"[01]"' | wc -l)
 if [ "$TARGET_COUNT" -ge 2 ]; then
     success "$TARGET_COUNT targets UP"
 else
@@ -96,7 +113,7 @@ fi
 
 # Check sample app
 echo -n "Checking sample-app... "
-if curl -s http://localhost:8080 | grep -q "Hello"; then
+if curl -s --max-time 5 "http://localhost:8080" | grep -q "Hello"; then
     success "responding"
 else
     fail "sample-app not responding. Check: docker compose logs sample-app"
@@ -105,7 +122,7 @@ fi
 
 # Check metrics endpoint
 echo -n "Checking metrics endpoint... "
-if curl -s http://localhost:8080/metrics | grep -q "http_requests_total"; then
+if curl -s --max-time 5 "http://localhost:8080/metrics" | grep -q "http_requests_total"; then
     success "exposing metrics"
 else
     fail "Metrics not available. Check: docker compose logs sample-app"
@@ -114,7 +131,7 @@ fi
 
 # Check Grafana
 echo -n "Checking Grafana... "
-if curl -s http://localhost:3000 | grep -q "Grafana"; then
+if curl -s --max-time 5 "http://localhost:3000" | grep -q "Grafana"; then
     success "responding"
 else
     fail "Grafana not responding. Check: docker compose logs grafana"

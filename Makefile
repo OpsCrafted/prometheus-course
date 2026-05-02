@@ -20,8 +20,7 @@ down:
 	cd labs && docker compose down
 
 clean:
-	cd labs && docker compose down -v
-	rm -rf labs/prometheus-data
+	cd labs && docker compose down -v && rm -rf prometheus-data
 
 logs-prometheus:
 	cd labs && docker compose logs -f prometheus
