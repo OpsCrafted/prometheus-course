@@ -2,21 +2,20 @@
 """
 Load Generator for Prometheus Course
 
-Continuously sends HTTP requests to target endpoints with weighted distribution:
-- 70% requests to / (successful)
-- 20% requests to /slow (1-2s latency)
-- 10% requests to /error (returns 500)
-
-Supports graceful shutdown on SIGTERM/SIGINT.
+Continuously sends HTTP requests to target endpoints with weighted
+distribution: 70% to / (successful), 20% to /slow (1-2s latency),
+10% to /error (returns 500). Supports graceful shutdown on
+SIGTERM/SIGINT.
 """
 
 import os
 import sys
 import time
 import signal
+import types
 import random
 import logging
-from datetime import datetime
+import threading
 from typing import NoReturn
 
 import requests
@@ -30,15 +29,17 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Global flag for graceful shutdown
-shutdown_event = False
+shutdown_event = threading.Event()
 
 
-def signal_handler(signum: int, frame) -> None:
+def signal_handler(signum: int, frame: types.FrameType | None) -> None:
     """Handle SIGTERM and SIGINT signals for graceful shutdown."""
     global shutdown_event
-    signal_name = 'SIGTERM' if signum == signal.SIGTERM else 'SIGINT'
-    logger.info(f"Received {signal_name}, initiating graceful shutdown...")
-    shutdown_event = True
+    signal_name = signal.Signals(signum).name
+    logger.info(
+        f"Received {signal_name}, initiating graceful shutdown..."
+    )
+    shutdown_event.set()
 
 
 def select_endpoint() -> str:
@@ -122,49 +123,58 @@ def run_load_generator(target_url: str, request_rate: float) -> NoReturn:
     delay_between_requests = 1.0 / request_rate
     request_count = 0
 
-    logger.info(f"Starting load generator")
+    logger.info("Starting load generator")
     logger.info(f"Target URL: {target_url}")
     logger.info(f"Request rate: {request_rate} req/sec")
     logger.info(f"Delay between requests: {delay_between_requests:.3f}s")
     logger.info("Press Ctrl+C to stop")
 
     try:
-        while not shutdown_event:
+        while not shutdown_event.is_set():
             endpoint = select_endpoint()
             result = send_request(target_url, endpoint)
             log_request(result)
 
             request_count += 1
 
-            # Sleep before next request
-            time.sleep(delay_between_requests)
+            # Responsive shutdown: wait with timeout instead of sleep
+            if shutdown_event.wait(timeout=delay_between_requests):
+                break
 
-    except KeyboardInterrupt:
-        logger.info("Keyboard interrupt received")
     finally:
-        logger.info(f"Load generator stopped. Total requests sent: {request_count}")
-        sys.exit(0)
+        logger.info(
+            f"Load generator stopped. Total requests sent: "
+            f"{request_count}"
+        )
 
 
 def main() -> None:
     """Main entry point."""
     # Read environment variables
     target_url = os.getenv('TARGET_URL', 'http://sample-app:8080')
+    target_url = target_url.rstrip('/')
     request_rate_str = os.getenv('REQUEST_RATE', '10')
 
     # Parse request rate
     try:
         request_rate = float(request_rate_str)
         if request_rate <= 0:
-            logger.error(f"REQUEST_RATE must be positive, got {request_rate}")
+            logger.error(
+                f"REQUEST_RATE must be positive, got {request_rate}"
+            )
             sys.exit(1)
     except ValueError:
-        logger.error(f"REQUEST_RATE must be a number, got {request_rate_str}")
+        logger.error(
+            f"REQUEST_RATE must be a number, got {request_rate_str}"
+        )
         sys.exit(1)
 
     # Validate target URL
     if not target_url.startswith(('http://', 'https://')):
-        logger.error(f"TARGET_URL must start with http:// or https://, got {target_url}")
+        logger.error(
+            f"TARGET_URL must start with http:// or https://, got "
+            f"{target_url}"
+        )
         sys.exit(1)
 
     # Register signal handlers for graceful shutdown
@@ -173,6 +183,7 @@ def main() -> None:
 
     # Run the load generator
     run_load_generator(target_url, request_rate)
+    sys.exit(0)
 
 
 if __name__ == '__main__':
