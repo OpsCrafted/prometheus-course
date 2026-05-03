@@ -1,4 +1,4 @@
-.PHONY: setup verify down clean logs-prometheus logs-grafana logs-app verify-rules verify-day-11 verify-day-14 help
+.PHONY: setup verify down clean reset logs-prometheus logs-grafana logs-app verify-rules verify-day-11 verify-day-14 help
 
 help:
 	@echo "Prometheus Course — Available targets:"
@@ -6,6 +6,7 @@ help:
 	@echo "  make verify             — Validate setup and services"
 	@echo "  make down               — Stop Docker containers"
 	@echo "  make clean              — Stop Docker and remove volumes"
+	@echo "  make reset              — Clean then restart (fresh state)"
 	@echo "  make logs-prometheus    — Tail Prometheus logs"
 	@echo "  make logs-grafana       — Tail Grafana logs"
 	@echo "  make logs-app           — Tail sample-app logs"
@@ -21,6 +22,8 @@ down:
 
 clean:
 	cd labs && docker compose down -v && rm -rf prometheus-data
+
+reset: clean setup
 
 logs-prometheus:
 	cd labs && docker compose logs -f prometheus

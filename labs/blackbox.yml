@@ -4,7 +4,7 @@ modules:
     timeout: 5s
     http:
       method: GET
-      expected_status_codes:
+      valid_status_codes:
         - 200
         - 201
         - 202

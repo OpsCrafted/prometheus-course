@@ -8,7 +8,11 @@ Run these checks to confirm everything is working:
 docker-compose ps
 ```
 
-Expected: 3 containers running (prometheus, node-exporter, sample-endpoint)
+Expected: 12 containers running:
+- prometheus, grafana, alertmanager
+- node-exporter, blackbox-exporter, pushgateway
+- sample-app, load-generator
+- postgres, postgres-exporter, redis, redis-exporter
 
 All should show status `Up`.
 
@@ -18,7 +22,7 @@ All should show status `Up`.
 curl -s http://localhost:9090/api/v1/targets | jq '.data.activeTargets | length'
 ```
 
-Expected: `2` (prometheus + node-exporter targets)
+Expected: `6` (prometheus, node-exporter, sample-app, postgres-exporter, redis-exporter, blackbox)
 
 ## 3. Prometheus UI
 
@@ -26,14 +30,14 @@ Open http://localhost:9090 in your browser.
 
 ### Check Targets Tab
 - Click **Status** > **Targets**
-- Expected: "prometheus" and "node-exporter" both showing "UP"
+- Expected: all 6 targets showing "UP" (prometheus, node-exporter, sample-app, postgres-exporter, redis-exporter, blackbox)
 - Check **Last Scrape** times — should be recent (within last 15 seconds)
 
 ### Check Graph Tab
 - Click **Graph** tab
 - Type `up` in the query box
 - Click **Execute**
-- Expected: Graph showing metrics for each target (should be 2 lines, both at value 1)
+- Expected: Graph showing metrics for each target (should be 6 lines, all at value 1)
 
 ## 4. First Query
 
@@ -55,7 +59,7 @@ In the Graph tab, type:
 count(up)
 ```
 
-Expected: Flat line at value `2` (you have 2 targets)
+Expected: Flat line at value `6` (you have 6 targets)
 
 ## Troubleshooting
 
