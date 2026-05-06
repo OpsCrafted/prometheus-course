@@ -1,4 +1,4 @@
-.PHONY: setup verify down clean reset logs-prometheus logs-grafana logs-app verify-rules verify-day-11 verify-day-14 help
+.PHONY: setup verify down clean reset logs-prometheus logs-grafana logs-app verify-rules verify-day-5 verify-day-11 verify-day-14 help
 
 help:
 	@echo "Prometheus Course — Available targets:"
@@ -10,6 +10,7 @@ help:
 	@echo "  make logs-prometheus    — Tail Prometheus logs"
 	@echo "  make logs-grafana       — Tail Grafana logs"
 	@echo "  make logs-app           — Tail sample-app logs"
+	@echo "  make verify-day-5       — Verify Day 5 (Go instrumentation metrics)"
 
 setup:
 	cd labs && docker compose up -d
@@ -33,6 +34,13 @@ logs-grafana:
 
 logs-app:
 	cd labs && docker compose logs -f sample-app
+
+.PHONY: verify-day-5
+verify-day-5:
+	@echo "Verifying Day 5 (Go instrumentation)..."
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=http_requests_total' | jq -e '.status == "success" and (.data.result | length > 0)' > /dev/null && echo "✓ http_requests_total counter exists" || (echo "✗ http_requests_total not found"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=http_request_duration_seconds_bucket' | jq -e '.status == "success" and (.data.result | length > 0)' > /dev/null && echo "✓ http_request_duration_seconds histogram exists" || (echo "✗ http_request_duration_seconds not found"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=http_request_size_bytes_bucket' | jq -e '.status == "success" and (.data.result | length > 0)' > /dev/null && echo "✓ http_request_size_bytes histogram exists" || (echo "✗ http_request_size_bytes not found"; exit 1)
 
 verify-rules:
 	cd labs && docker compose exec prometheus promtool check rules /etc/prometheus/alert_rules.yml
