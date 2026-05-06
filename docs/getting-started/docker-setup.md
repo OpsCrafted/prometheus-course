@@ -18,7 +18,7 @@ This runs `labs/setup.sh`, which:
 
 ```bash
 cd labs
-docker-compose up -d
+docker compose up -d
 ```
 
 Then verify:
@@ -37,7 +37,7 @@ Expected output: JSON with `"status":"success"` and data showing which targets a
 ## Stopping Services
 
 ```bash
-cd labs && docker-compose down
+cd labs && docker compose down
 ```
 
 This stops containers but keeps data.
@@ -53,14 +53,14 @@ This stops, removes volumes, and restarts fresh.
 ## Troubleshooting
 
 **Containers won't start:**
-- Check logs: `docker-compose logs`
+- Check logs: `docker compose logs`
 - Verify Docker is running: `docker ps`
 
 **Port already in use:**
 - Port 9090, 9100, or 8080 may be taken
 - Run: `lsof -i :9090` to see what's using the port
-- Either stop that service or modify docker-compose.yml port mappings
+- Either stop that service or modify docker compose.yml port mappings
 
 **Prometheus shows "DOWN" targets:**
 - Wait 30 seconds and refresh UI
-- Check logs: `docker-compose logs prometheus`
+- Check logs: `docker compose logs prometheus`
