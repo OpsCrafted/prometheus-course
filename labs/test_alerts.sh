@@ -13,13 +13,13 @@ SAMPLE_APP_URL="http://localhost:8080"
 
 # Restore original rules on exit (success or failure)
 cleanup() {
+    set +e
     echo ""
     echo "Restoring original alert rules..."
     docker compose cp alert_rules.yml prometheus:/etc/prometheus/alert_rules.yml
     curl -s -X POST "$PROMETHEUS_URL/-/reload" > /dev/null
     echo "✓ Original rules restored"
 }
-trap cleanup EXIT
 
 echo "=== Prometheus Alert Testing ==="
 echo ""
@@ -42,7 +42,13 @@ echo "✓ Alertmanager OK"
 echo ""
 echo "2. Installing test-mode alert rules (for: 15s)..."
 docker compose cp alert_rules_test.yml prometheus:/etc/prometheus/alert_rules.yml
-curl -s -X POST "$PROMETHEUS_URL/-/reload" > /dev/null
+trap cleanup EXIT
+
+RELOAD_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$PROMETHEUS_URL/-/reload")
+if [ "$RELOAD_STATUS" != "200" ]; then
+    echo "❌ Prometheus reload failed (HTTP $RELOAD_STATUS)"
+    exit 1
+fi
 echo "✓ Test rules loaded — waiting 5s for Prometheus to apply..."
 sleep 5
 
@@ -51,8 +57,8 @@ echo ""
 echo "3. Testing TargetDown alert..."
 echo "   Stopping node-exporter..."
 docker compose stop node-exporter
-echo "   Waiting 25s for alert to fire (for: 15s + scrape interval)..."
-sleep 25
+echo "   Waiting 35s for alert to fire (for: 15s + scrape interval)..."
+sleep 35
 
 FIRING=$(curl -s "$ALERTMANAGER_URL/api/v2/alerts?filter=alertname%3DTargetDown" | jq '. | length' 2>/dev/null || echo "0")
 if [ "$FIRING" -gt 0 ]; then
@@ -71,8 +77,8 @@ echo "   Generating 500 errors via /error endpoint..."
 for i in $(seq 1 500); do
     curl -s "$SAMPLE_APP_URL/error" > /dev/null 2>&1 || true
 done
-echo "   Waiting 25s for alert to fire (for: 15s + scrape interval)..."
-sleep 25
+echo "   Waiting 35s for alert to fire (for: 15s + scrape interval)..."
+sleep 35
 
 FIRING=$(curl -s "$ALERTMANAGER_URL/api/v2/alerts?filter=alertname%3DHighErrorRate" | jq '. | length' 2>/dev/null || echo "0")
 if [ "$FIRING" -gt 0 ]; then
