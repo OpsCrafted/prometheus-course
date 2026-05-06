@@ -83,13 +83,13 @@ rate(http_requests_total[5m])
 
 Result: Fraction of successful requests (0.95 = 95%)
 
-**Step 4:** Find slow requests:
+**Step 4:** Find active endpoints:
 
 ```
-http_request_duration_seconds > 0.5
+http_request_duration_seconds_count > 10
 ```
 
-Returns requests slower than 0.5 seconds.
+Returns endpoints that have served more than 10 requests.
 
 ## Key Concepts
 

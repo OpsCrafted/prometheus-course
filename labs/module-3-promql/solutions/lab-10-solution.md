@@ -2,8 +2,8 @@
 
 ## Query Results
 
-**Query 1:** `count(up)` = `2`
-- Result: 2 targets total
+**Query 1:** `count(up)` = `6`
+- Result: 6 targets total (prometheus, node-exporter, sample-app, postgres-exporter, redis-exporter, blackbox)
 
 **Query 2:** `sum(http_requests_total)` = `5` (example)
 - Result: Total requests across all combinations
@@ -26,8 +26,12 @@
 
 **Query 6:** `count(up) by (job)`
 ```
-{job="prometheus"}      1
-{job="node-exporter"}   1
+{job="prometheus"}          1
+{job="node-exporter"}       1
+{job="sample-app"}          1
+{job="postgres-exporter"}   1
+{job="redis-exporter"}      1
+{job="blackbox"}            1
 ```
 
 **Query 7:** `max(node_memory_MemFree_bytes)`

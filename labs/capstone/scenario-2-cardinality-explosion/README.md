@@ -25,11 +25,11 @@ Identify which labels are causing the cardinality explosion and fix the Promethe
 1. High-cardinality labels are ones with many unique values (like request_id, user_hash, session_id)
 2. Unbounded labels create one time series per unique value
 3. With 2M unique request_ids, you get 2M time series per metric
-4. Prometheus relabel_configs can drop labels before ingestion
+4. Prometheus metric_relabel_configs can drop labels after scraping
 5. Check the Prometheus targets and metrics endpoint
 6. Look for metrics with unusual label combinations
 
 ## Files
 - `broken-prometheus.yml` - Config without label dropping rules
 - `incident-data.json` - Series count timeline and problematic labels
-- `solution.md` - Root cause and fix using relabel_configs
+- `solution.md` - Root cause and fix using metric_relabel_configs

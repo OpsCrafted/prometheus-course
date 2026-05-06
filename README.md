@@ -204,7 +204,7 @@ prometheus-course/
 
 By the end:
 
-- **Week 1:** A working Prometheus + Node Exporter environment, understanding of metrics
+- **Week 1:** A working full observability stack (12 services), understanding of metrics
 - **Week 2:** Instrumented Go application exporting custom metrics
 - **Week 3:** Custom dashboard showing business + system metrics, 3 passing capstone challenges
 
