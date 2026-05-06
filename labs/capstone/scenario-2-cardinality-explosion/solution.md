@@ -18,7 +18,7 @@ Problems:
 
 ## Solution: Drop High-Cardinality Labels
 
-Add relabel_configs to the sample-app job to drop request_id and trace_id before ingestion:
+Add metric_relabel_configs to the sample-app job to drop request_id and trace_id after scraping:
 
 ```yaml
 scrape_configs:
@@ -28,7 +28,7 @@ scrape_configs:
       - targets: ['sample-app:8080']
         labels:
           group: 'application'
-    relabel_configs:
+    metric_relabel_configs:
       - action: labeldrop
         regex: '(request_id|trace_id)'
 ```
@@ -85,7 +85,7 @@ High-cardinality labels like request_id:
 **Cardinality explosion is the #1 way to destroy Prometheus:**
 1. Keep label cardinality under control (<100 values per label ideally)
 2. Drop unbounded labels: request_id, user_id, session_id, ip_address, etc.
-3. Use relabel_configs to enforce this at scrape time
+3. Use metric_relabel_configs to drop labels after scraping
 4. Monitor label cardinality regularly (use Prometheus' cardinality API)
 5. Store request-level data in logs/traces, not metrics
 
