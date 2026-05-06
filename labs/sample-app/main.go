@@ -42,19 +42,41 @@ var (
 		},
 		[]string{"endpoint"},
 	)
+
+	// Histogram: HTTP request body size in bytes
+	httpRequestSizeBytes = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "http_request_size_bytes",
+			Help:    "HTTP request size in bytes",
+			Buckets: []float64{100, 1000, 10000, 100000, 1000000},
+		},
+		[]string{"endpoint"},
+	)
+
+	// Histogram: HTTP response body size in bytes
+	httpResponseSizeBytes = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "http_response_size_bytes",
+			Help:    "HTTP response size in bytes",
+			Buckets: []float64{100, 1000, 10000, 100000, 1000000},
+		},
+		[]string{"endpoint"},
+	)
 )
 
 func init() {
-	// Register all metrics
 	prometheus.MustRegister(httpRequestsTotal)
 	prometheus.MustRegister(activeConnections)
 	prometheus.MustRegister(httpRequestDurationSeconds)
+	prometheus.MustRegister(httpRequestSizeBytes)
+	prometheus.MustRegister(httpResponseSizeBytes)
 }
 
-// statusRecorder wraps http.ResponseWriter to capture the HTTP status code
+// statusRecorder wraps http.ResponseWriter to capture the HTTP status code and bytes written
 type statusRecorder struct {
 	http.ResponseWriter
-	status int
+	status       int
+	bytesWritten int
 }
 
 func (r *statusRecorder) WriteHeader(code int) {
@@ -62,22 +84,33 @@ func (r *statusRecorder) WriteHeader(code int) {
 	r.ResponseWriter.WriteHeader(code)
 }
 
+func (r *statusRecorder) Write(b []byte) (int, error) {
+	n, err := r.ResponseWriter.Write(b)
+	r.bytesWritten += n
+	return n, err
+}
+
 // instrumentedHandler wraps an HTTP handler with Prometheus instrumentation
 func instrumentedHandler(endpoint string, handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Wrap the response writer to capture status code
 		recorder := &statusRecorder{ResponseWriter: w, status: 200}
 
-		// Increment active connections
 		activeConnections.Inc()
 		defer activeConnections.Dec()
 
-		// Record request metrics
 		start := time.Now()
 		handler(recorder, r)
 		duration := time.Since(start).Seconds()
+
 		httpRequestsTotal.WithLabelValues(r.Method, endpoint, strconv.Itoa(recorder.status)).Inc()
 		httpRequestDurationSeconds.WithLabelValues(endpoint).Observe(duration)
+
+		reqSize := r.ContentLength
+		if reqSize < 0 {
+			reqSize = 0
+		}
+		httpRequestSizeBytes.WithLabelValues(endpoint).Observe(float64(reqSize))
+		httpResponseSizeBytes.WithLabelValues(endpoint).Observe(float64(recorder.bytesWritten))
 	}
 }
 
