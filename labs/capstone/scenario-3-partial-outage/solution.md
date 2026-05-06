@@ -4,7 +4,7 @@
 
 Configuration typo in prometheus.yml:
 - node-exporter target is set to `localhost:9101`
-- Actual service is running on `localhost:9100`
+- Actual service is running on `node-exporter:9100`
 - Prometheus can't connect, scrape fails, metrics disappear
 
 ```yaml
@@ -63,7 +63,7 @@ Update prometheus.yml to use correct port:
 ```yaml
 - job_name: 'node-exporter'
   static_configs:
-    - targets: ['localhost:9100']  # CORRECT PORT
+    - targets: ['node-exporter:9100']  # CORRECT: service name + port
       labels:
         group: 'system'
 ```
