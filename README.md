@@ -142,7 +142,7 @@ Track your progress:
 
 - [ ] **Week 3:** Complete Days 9-15 (PromQL + Capstone Scenarios)
   - Write 10+ different PromQL queries
-  - Solve all 5 capstone scenarios (Health Check, Request Analysis, SLA Monitoring, Capacity Planning, Multi-metric Correlation)
+  - Complete the 3 core capstone scenarios (Latency Spike, Cardinality Explosion, Partial Outage)
   - Build a custom dashboard from scratch
 
 ---
