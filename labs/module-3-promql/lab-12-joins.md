@@ -16,17 +16,19 @@ Result: Average latency in seconds (0.05 = 50ms)
 
 **Query 2:** Success percentage
 ```
-rate(http_requests_total{status="200"}[5m]) /
-rate(http_requests_total[5m])
+sum(rate(http_requests_total{status="200"}[5m]))
+/
+sum(rate(http_requests_total[5m]))
 ```
-Result: Fraction (0.95 = 95%)
+Result: Fraction (0.95 = 95%) — sum() ensures label sets match before dividing
 
 **Query 3:** Error rate
 ```
-rate(http_requests_total{status=~"5.."}[5m]) /
-rate(http_requests_total[5m])
+sum(rate(http_requests_total{status=~"5.."}[5m]))
+/
+sum(rate(http_requests_total[5m]))
 ```
-Result: Fraction of 5XX errors
+Result: Fraction of 5XX errors — sum() collapses labels before dividing
 
 **Query 4:** Comparison (slow requests)
 ```
@@ -34,11 +36,11 @@ http_request_duration_seconds > 0.1
 ```
 Result: Requests slower than 100ms
 
-**Query 5:** Math (KB/s)
+**Query 5:** Request throughput
 ```
-rate(http_response_size_bytes[5m]) / 1024
+rate(http_requests_total[5m]) * 60
 ```
-Result: Throughput in KB/s
+Result: Requests per minute
 
 **Query 6:** Multiple operations
 ```

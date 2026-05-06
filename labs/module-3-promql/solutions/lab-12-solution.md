@@ -10,13 +10,17 @@ Result: 0.05  (50 milliseconds)
 
 **Query 2:** Success percentage
 ```
-rate(http_requests_total{status="200"}[5m]) / rate(http_requests_total[5m])
+sum(rate(http_requests_total{status="200"}[5m]))
+/
+sum(rate(http_requests_total[5m]))
 Result: 0.95  (95% successful)
 ```
 
 **Query 3:** Error rate (5XX)
 ```
-rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m])
+sum(rate(http_requests_total{status=~"5.."}[5m]))
+/
+sum(rate(http_requests_total[5m]))
 Result: 0.05  (5% error rate)
 ```
 
@@ -26,10 +30,10 @@ http_request_duration_seconds > 0.1
 Result: Series where duration > 0.1s (empty if none)
 ```
 
-**Query 5:** Throughput KB/s
+**Query 5:** Request throughput
 ```
-rate(http_response_size_bytes[5m]) / 1024
-Result: 10.5  (10.5 KB/s)
+rate(http_requests_total[5m]) * 60
+Result: ~1.2  (requests per minute)
 ```
 
 **Query 6:** Requests per hour
