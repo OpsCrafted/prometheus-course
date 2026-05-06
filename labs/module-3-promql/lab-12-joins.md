@@ -30,11 +30,11 @@ sum(rate(http_requests_total[5m]))
 ```
 Result: Fraction of 5XX errors — sum() collapses labels before dividing
 
-**Query 4:** Comparison (slow requests)
+**Query 4:** Comparison (active endpoints)
 ```
-http_request_duration_seconds > 0.1
+http_request_duration_seconds_count > 10
 ```
-Result: Requests slower than 100ms
+Result: Endpoints that have served more than 10 requests
 
 **Query 5:** Request throughput
 ```
