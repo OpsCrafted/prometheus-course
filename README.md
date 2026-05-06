@@ -2,6 +2,8 @@
 
 Master monitoring and observability in 2-3 weeks. Self-paced hands-on course for DevOps/SRE engineers.
 
+> **Full course index:** [COURSE_INDEX.md](COURSE_INDEX.md)
+
 ---
 
 ## 🎯 Learning Outcomes
@@ -218,7 +220,7 @@ You'll have hands-on experience with the monitoring stack used in production sys
 - [Architecture Diagrams](docs/reference/architecture-diagrams.md) — Visual reference for pull model, alerting, service discovery
 - [Python Instrumentation](docs/module-2-instrumentation/day-6-python-instrumentation.md) — Go + Python side-by-side
 - [Golden Signals Lab](docs/capstone/golden-signals-lab/README.md) — Real SRE troubleshooting scenario
-- [Module 6: Pitfalls & Anti-Patterns](docs/06-pitfalls/README.md) — Avoid production disasters
+- [Pitfalls & Anti-Patterns *(optional)*](docs/06-pitfalls/README.md) — Avoid production disasters
 
 ---
 
