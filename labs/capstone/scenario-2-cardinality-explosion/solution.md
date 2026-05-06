@@ -29,11 +29,6 @@ scrape_configs:
         labels:
           group: 'application'
     relabel_configs:
-      # Drop request_id and trace_id labels
-      - source_labels: [__name__]
-        regex: '.*request_id.*|.*trace_id.*'
-        action: drop
-      # Alternative: drop specific label names
       - action: labeldrop
         regex: '(request_id|trace_id)'
 ```
@@ -52,7 +47,7 @@ How it works:
 
 2. **Check Prometheus cardinality:**
    ```promql
-   # Query the TSDB cardinality endpoint
+   # List all metric names (label values for __name__)
    curl http://localhost:9090/api/v1/label/__name__/values
    ```
    - Before: Returns 5M unique __name__+label combinations
