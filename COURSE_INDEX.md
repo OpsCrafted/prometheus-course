@@ -76,7 +76,10 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 
 **Track B — Python:**
 - **Guide:** `docs/module-2-instrumentation/day-6-python-instrumentation.md`
-- **Examples:** `labs/module-2-instrumentation/solutions/python-counter-example.py`, `python-gauge-example.py`, `python-histogram-example.py`
+- **Examples:**
+  - `labs/module-2-instrumentation/solutions/python-counter-example.py`
+  - `labs/module-2-instrumentation/solutions/python-gauge-example.py`
+  - `labs/module-2-instrumentation/solutions/python-histogram-example.py`
 
 **Time:** 90 minutes (either track)
 
