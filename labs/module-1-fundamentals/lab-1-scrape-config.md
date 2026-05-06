@@ -92,7 +92,7 @@ See `labs/module-1-fundamentals/solutions/lab-1-solution.yml`
 
 **Metrics didn't change:**
 - May need to wait 15 seconds (scrape interval)
-- Reload may not have worked; check Prometheus logs: `docker-compose logs prometheus | grep reload`
+- Reload may not have worked; check Prometheus logs: `docker compose logs prometheus | grep reload`
 
 ## Exit Criteria
 
