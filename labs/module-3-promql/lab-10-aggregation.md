@@ -11,7 +11,7 @@ Perform these queries:
 ```
 count(up)
 ```
-Should return: 2 (prometheus, node-exporter)
+Should return: 6 (one per scraped job: prometheus, node-exporter, sample-app, postgres-exporter, redis-exporter, blackbox)
 
 **Query 2:** Sum all requests (if app running)
 ```
@@ -41,7 +41,7 @@ Should return: Average CPU seconds
 ```
 count(up) by (job)
 ```
-Should return: prometheus=1, node-exporter=1
+Should return: one series per scraped job (prometheus, node-exporter, sample-app, postgres-exporter, redis-exporter, blackbox)
 
 **Query 7:** Max memory
 ```
