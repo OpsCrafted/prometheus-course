@@ -5,7 +5,7 @@ Run these checks to confirm everything is working:
 ## 1. Docker Containers Running
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 Expected: 12 containers running:
@@ -64,13 +64,13 @@ Expected: Flat line at value `6` (you have 6 targets)
 ## Troubleshooting
 
 **Prometheus UI doesn't load (ERR_CONNECTION_REFUSED):**
-- Check: `docker-compose ps` — is prometheus running?
+- Check: `docker compose ps` — is prometheus running?
 - If not running, restart: `make setup`
 - Wait 30 seconds for startup
 
 **Targets showing "DOWN":**
 - Wait 30 seconds, refresh page
-- Check Prometheus logs: `docker-compose logs prometheus`
+- Check Prometheus logs: `docker compose logs prometheus`
 - Node Exporter may take longer to start
 
 **curl command fails (`Connection refused`):**
