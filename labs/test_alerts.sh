@@ -14,6 +14,7 @@ SAMPLE_APP_URL="http://localhost:8080"
 # Restore original rules on exit (success or failure)
 cleanup() {
     set +e
+    docker compose start node-exporter 2>/dev/null
     echo ""
     echo "Restoring original alert rules..."
     docker compose cp alert_rules.yml prometheus:/etc/prometheus/alert_rules.yml

@@ -25,11 +25,3 @@ groups:
           severity: warning
         annotations:
           summary: "P95 latency >1.5s on {{ $labels.job }}"
-
-      - alert: LowTraffic
-        expr: sum(rate(http_requests_total[1m])) by (job) < 0.1
-        for: 15s
-        labels:
-          severity: warning
-        annotations:
-          summary: "Low traffic (<0.1 req/s) on {{ $labels.job }}"
