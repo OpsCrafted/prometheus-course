@@ -161,7 +161,7 @@ prometheus-course/
 │   ├── capstone/                 # Final challenges
 │   └── reference/                # Cheatsheets, glossary
 ├── labs/
-│   ├── docker-compose.yml        # Prometheus + Node Exporter
+│   ├── docker-compose.yml        # Full observability stack (12 services)
 │   ├── prometheus-base.yml       # Scrape config
 │   ├── module-1-fundamentals/    # Day 1-4 labs + solutions
 │   ├── module-2-instrumentation/ # Day 5-8 labs + solutions

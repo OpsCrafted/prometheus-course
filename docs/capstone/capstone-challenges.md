@@ -60,17 +60,17 @@ After completing Modules 1-3, tackle three real-world monitoring incidents. Each
 ## How to Work Through a Scenario
 
 Each scenario directory contains:
-- `incident-data/` — pre-recorded metrics simulating the incident
 - `README.md` — scenario setup and guided questions
-- `solution/` — expected PromQL queries and fixes
-- `verify.sh` — script to check your work
+- `incident-data.json` — sample metrics data for the scenario
+- `solution.md` — root cause analysis and recommended fix
+- `broken-prometheus.yml` — the misconfigured file to debug
 
 **Process:**
 1. Read the scenario README
-2. Load incident data into your Prometheus
-3. Answer guided questions using PromQL
-4. Compare your queries against solution/
-5. Implement recommended fixes in your config
+2. Review `incident-data.json` to understand the failure context
+3. Answer the guided questions using PromQL
+4. Compare your approach against `solution.md`
+5. Implement the recommended config fixes
 
 ---
 
