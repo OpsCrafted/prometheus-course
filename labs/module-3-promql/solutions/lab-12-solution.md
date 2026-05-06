@@ -24,10 +24,10 @@ sum(rate(http_requests_total[5m]))
 Result: 0.05  (5% error rate)
 ```
 
-**Query 4:** Slow requests (>100ms)
+**Query 4:** Comparison (active endpoints)
 ```
-http_request_duration_seconds > 0.1
-Result: Series where duration > 0.1s (empty if none)
+http_request_duration_seconds_count > 10
+Result: Endpoints that have served more than 10 requests
 ```
 
 **Query 5:** Request throughput
