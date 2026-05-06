@@ -163,7 +163,7 @@ volumes:
   prometheus_data:
 ```
 
-Start: `docker-compose up -d`
+Start: `docker compose up -d`
 
 ## Retention
 

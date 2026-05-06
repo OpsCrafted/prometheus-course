@@ -9,7 +9,7 @@ make setup
 ```
 
 This runs `labs/setup.sh`, which:
-1. Starts Docker Compose (Prometheus + Node Exporter + sample endpoint)
+1. Starts Docker Compose (full observability stack: 12 services)
 2. Waits 3 seconds for services to boot
 3. Retries up to 10 times with 2-second delays if Prometheus doesn't respond
 4. Verifies Prometheus responds to a health check

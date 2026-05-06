@@ -119,8 +119,8 @@ See [lab-1-scrape-config.md](../../labs/module-1-fundamentals/lab-1-scrape-confi
 
 ## Exit Criteria
 
-- [ ] Docker running: `docker-compose ps` shows 2 containers (prometheus, node-exporter)
+- [ ] Docker running: `docker compose ps` shows all services up (12 services)
 - [ ] Prometheus responds: `curl http://localhost:9090/api/v1/targets`
-- [ ] See at least 2 targets in UI (Targets tab)
+- [ ] See 6 targets in UI (Targets tab): prometheus, node-exporter, sample-app, postgres-exporter, redis-exporter, blackbox
 - [ ] Can run query `up` and see results
 - [ ] Can run query `node_memory_MemFree_bytes` and see results

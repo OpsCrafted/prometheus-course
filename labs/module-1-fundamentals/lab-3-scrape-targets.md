@@ -56,7 +56,7 @@ You should see 5 jobs now:
 count(up)
 ```
 
-Should show `2` (only 2 targets are UP: prometheus and node-exporter).
+Should show `6` (prometheus, node-exporter, sample-app, postgres-exporter, redis-exporter, blackbox).
 
 ## Solution
 
