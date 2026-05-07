@@ -147,6 +147,13 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 - **Topics:** Histogram buckets, histogram_quantile(), percentiles, p50/p95/p99
 - **Time:** 90 minutes
 
+### Day 15: SLOs and Burn Rates
+- **Guide:** `docs/module-3-promql/day-15-slos-burn-rates.md`
+- **Lab:** `labs/module-3-promql/lab-15-slos-burn-rates.md`
+- **Solution:** `labs/module-3-promql/solutions/lab-15-solution.md`
+- **Topics:** SLI, SLO, error budget, burn rate, multi-window alerting, latency SLO
+- **Time:** 90 minutes
+
 ### Day 16: PromQL Capstone
 - **Guide:** `docs/module-3-promql/day-16-capstone.md`
 - **Lab:** `labs/module-3-promql/lab-16-capstone.md`
@@ -154,7 +161,7 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 - **Topics:** Multi-step queries, health checks, SLA monitoring, capacity planning
 - **Time:** 90 minutes
 
-**Total Module 3:** 10.5 hours
+**Total Module 3:** 12 hours
 
 ---
 
@@ -209,9 +216,9 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 
 | Component | Count |
 |-----------|-------|
-| Day guides | 15 |
-| Labs | 15 |
-| Solutions | 15 |
+| Day guides | 16 |
+| Labs | 16 |
+| Solutions | 16 |
 | Core capstone scenarios | 3 |
 | Extended capstone labs | 5 |
 | Reference docs | 4 |
@@ -221,6 +228,6 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 | Getting Started | 2–3 hours |
 | Module 1: Fundamentals | 6 hours |
 | Module 2: Instrumentation | 6 hours |
-| Module 3: PromQL | 10.5 hours |
+| Module 3: PromQL | 12 hours |
 | Core Capstone | 3–4 hours |
-| **Total (core path)** | **~28 hours** |
+| **Total (core path)** | **~29.5 hours** |

@@ -1,4 +1,4 @@
-.PHONY: setup verify down clean reset logs-prometheus logs-grafana logs-app verify-rules verify-day-5 verify-day-9 verify-day-10 verify-day-12 verify-day-13 verify-day-16 verify-day-11 verify-day-14 help
+.PHONY: setup verify down clean reset logs-prometheus logs-grafana logs-app verify-rules verify-day-5 verify-day-9 verify-day-10 verify-day-12 verify-day-13 verify-day-15 verify-day-16 verify-day-11 verify-day-14 help
 
 help:
 	@echo "Prometheus Course — Available targets:"
@@ -15,6 +15,7 @@ help:
 	@echo "  make verify-day-10      — Verify Day 10 (aggregation operators)"
 	@echo "  make verify-day-12      — Verify Day 12 (binary operators)"
 	@echo "  make verify-day-13      — Verify Day 13 (PromQL functions)"
+	@echo "  make verify-day-15      — Verify Day 15 (SLOs and burn rates)"
 	@echo "  make verify-day-16      — Verify Day 16 (PromQL capstone)"
 
 setup:
@@ -68,6 +69,12 @@ verify-day-13:
 	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=round(node_memory_MemFree_bytes%20%2F%201e9)' | jq -e '.status == "success" and (.data.result | length > 0)' > /dev/null && echo "✓ round() math function works" || (echo "✗ round() failed"; exit 1)
 	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=changes(up%5B15m%5D)' | jq -e '.status == "success" and (.data.result | length > 0)' > /dev/null && echo "✓ changes() range function works" || (echo "✗ changes() failed"; exit 1)
 	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=rate(http_requests_total%5B5m%5D%20offset%201m)' | jq -e '.status == "success" and (.data.result | length > 0)' > /dev/null && echo "✓ offset modifier works" || (echo "✗ offset modifier failed — stack may need 1+ minute of uptime"; exit 1)
+
+verify-day-15:
+	@echo "Verifying Day 15 (SLOs and burn rates)..."
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=sum(rate(http_requests_total%7Bstatus!~%225..%22%7D%5B5m%5D))%2Fsum(rate(http_requests_total%5B5m%5D))' | jq -e '.status == "success" and (.data.result | length > 0)' > /dev/null && echo "✓ availability SLI query returns data" || (echo "✗ availability SLI query failed — stack may need 5+ minutes of uptime"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=(sum(rate(http_requests_total%7Bstatus%3D~%225..%22%7D%5B5m%5D))%2Fsum(rate(http_requests_total%5B5m%5D)))%2F0.01' | jq -e '.status == "success"' > /dev/null && echo "✓ burn rate query executes" || (echo "✗ burn rate query failed"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/rules' | jq -e '[.data.groups[].rules[] | select(.name == "HighErrorBudgetBurn")] | length > 0' > /dev/null && echo "✓ HighErrorBudgetBurn alert loaded" || (echo "✗ HighErrorBudgetBurn alert not found — add it to labs/alert_rules.yml and reload"; exit 1)
 
 verify-day-16:
 	@echo "Verifying Day 16 (PromQL capstone)..."

@@ -10,6 +10,7 @@ Labs for Days 9–16. Run queries at http://localhost:9090.
 | Lab 12 | [lab-12-joins.md](lab-12-joins.md) | Binary operators, sum()-before-divide pattern, ratios and percentages |
 | Lab 13 | [lab-13-functions.md](lab-13-functions.md) | Mathematical functions, offset, derivatives |
 | Lab 14 | [lab-14-histograms.md](lab-14-histograms.md) | histogram_quantile(), p50/p95/p99 latency analysis |
+| Lab 15 | [lab-15-slos-burn-rates.md](lab-15-slos-burn-rates.md) | SLI queries, error budget, burn rate, multi-window alert, Grafana SLO panel |
 | Lab 16 | [lab-16-capstone.md](lab-16-capstone.md) | Multi-step real-world queries: SLA monitoring, capacity planning |
 
 Solutions: [solutions/](solutions/)
