@@ -140,10 +140,10 @@ Track your progress:
   - Custom metrics exported to Prometheus
   - Dashboard shows your metrics
 
-- [ ] **Week 3:** Complete Days 9-16 (PromQL + Capstone Scenarios)
+- [ ] **Week 3:** Complete Days 9-17 (PromQL + Capstone + Production Readiness)
   - Write 10+ different PromQL queries
   - Complete the 3 core capstone scenarios (Latency Spike, Cardinality Explosion, Partial Outage)
-  - Build a custom dashboard from scratch
+  - Wire 5 production alerts and complete the production readiness checklist
 
 ---
 
@@ -155,7 +155,7 @@ prometheus-course/
 │   ├── getting-started/          # Docker setup, first steps
 │   ├── module-1-fundamentals/    # Days 1-4 guides
 │   ├── module-2-instrumentation/ # Days 5-8 guides
-│   ├── module-3-promql/          # Days 9-16 guides
+│   ├── module-3-promql/          # Days 9-17 guides
 │   ├── capstone/                 # Final challenges
 │   └── reference/                # Cheatsheets, glossary
 ├── labs/
@@ -164,7 +164,7 @@ prometheus-course/
 │   ├── alert_rules.yml           # Alerting rules
 │   ├── module-1-fundamentals/    # Day 1-4 labs + solutions
 │   ├── module-2-instrumentation/ # Day 5-8 labs + solutions
-│   └── module-3-promql/          # Day 9-16 labs + solutions
+│   └── module-3-promql/          # Day 9-17 labs + solutions
 └── Makefile                      # Setup, reset, cleanup
 
 ```
@@ -194,7 +194,7 @@ prometheus-course/
 
 - **Course content:** Review the specific day's guide (likely answers your question)
 - **Docker issues:** See Getting Started troubleshooting section
-- **PromQL confusion:** Days 9-16 build on each other. Revisit earlier days if stuck
+- **PromQL confusion:** Days 9-17 build on each other. Revisit earlier days if stuck
 - **Contribution:** Found a typo or unclear section? Open an issue.
 
 ---

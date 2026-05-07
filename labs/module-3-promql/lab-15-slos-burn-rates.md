@@ -60,7 +60,7 @@ Run the burn rate query for a 99% SLO (allowed error ratio = 0.01):
 
 **Question:** At your current burn rate, how many days would it take to exhaust a 30-day error budget?
 
-*(Formula: 30 / burn_rate. If burn rate is 0, budget never exhausts.)*
+*(Formula: 30 / burn_rate. Expected result on this stack: burn rate ≈ 10, so 30 / 10 = **3 days**. The load generator sends 10% errors intentionally — you are watching a live budget burn. This is correct behavior, not a broken setup.)*
 
 ## Exercise 4: Latency SLI
 
@@ -140,6 +140,8 @@ Create a Grafana panel showing the live SLO percentage.
 7. Click **Apply**
 
 **Exit artifact:** Take a screenshot of the panel showing the SLO percentage with the 99% threshold line.
+
+> **Expected:** Panel shows ~90% (red zone, below the 99% threshold). This is correct — the load generator's 10% error rate keeps the stack below SLO by design. The threshold line at 99% is working; you are watching a breached SLO, not a misconfigured panel.
 
 ## Solution
 

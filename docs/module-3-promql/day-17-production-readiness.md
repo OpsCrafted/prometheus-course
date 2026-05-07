@@ -1,6 +1,6 @@
 # Day 17: Production Readiness Checklist
 
-**Time:** 90 minutes | **Prerequisites:** Days 9-16 completed
+**Time:** 90 minutes | **Prerequisites:** Days 9-16 completed (all PromQL labs and capstone)
 
 ## Learning Outcomes
 

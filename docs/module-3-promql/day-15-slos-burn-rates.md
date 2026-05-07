@@ -189,7 +189,11 @@ Confirm: availability SLI + error ratio = 1.0.
 0.01
 ```
 
-On a healthy stack with no errors this returns 0. Note the value — you'll interpret it in the lab.
+**Expected result on this stack: ~10.**
+
+The load generator deliberately sends 10% of requests to `/error` (status 500). That gives an error ratio of ~0.10. Divided by the allowed error ratio (0.01), burn rate = **0.10 / 0.01 = 10**.
+
+This is not a misconfiguration. You are watching budget burn in real time. A burn rate of 10 means the monthly error budget exhausts in 3 days. The alert you write in the lab will fire — that is the correct outcome.
 
 **Step 4:** Run the latency SLI:
 
