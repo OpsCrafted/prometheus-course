@@ -1,4 +1,4 @@
-.PHONY: setup verify down clean reset logs-prometheus logs-grafana logs-app verify-rules verify-day-5 verify-day-9 verify-day-10 verify-day-12 verify-day-13 verify-day-15 verify-day-16 verify-day-11 verify-day-14 help
+.PHONY: setup verify down clean reset logs-prometheus logs-grafana logs-app verify-rules verify-day-5 verify-day-9 verify-day-10 verify-day-12 verify-day-13 verify-day-16 verify-day-11 verify-day-14 help
 
 help:
 	@echo "Prometheus Course — Available targets:"

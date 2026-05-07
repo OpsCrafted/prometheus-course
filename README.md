@@ -195,7 +195,7 @@ prometheus-course/
 
 - **Course content:** Review the specific day's guide (likely answers your question)
 - **Docker issues:** See Getting Started troubleshooting section
-- **PromQL confusion:** Days 9-15 build on each other. Revisit earlier days if stuck
+- **PromQL confusion:** Days 9-16 build on each other. Revisit earlier days if stuck
 - **Contribution:** Found a typo or unclear section? Open an issue.
 
 ---

@@ -424,7 +424,7 @@ Congrats! You now have:
 
 **Immediate Next:** Head to **Module 1, Day 1** to learn Prometheus architecture in depth. You've got the hands-on foundation. Now we'll explain what's happening under the hood.
 
-**Later:** After completing Days 9-12 (PromQL fundamentals), tackle **Module 3, Day 15: Capstone Scenarios**. These 5 real-world challenges will teach you to:
+**Later:** After completing Days 9-12 (PromQL fundamentals), tackle **Module 3, Day 16: Capstone Scenarios**. These 5 real-world challenges will teach you to:
 - Debug latency spikes and cardinality explosions
 - Analyze request rates and error patterns
 - Monitor SLOs (Service Level Objectives)
