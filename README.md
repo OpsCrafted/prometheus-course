@@ -79,7 +79,7 @@ Week 1                          Week 2                      Week 3
 
 ---
 
-### 🔍 **Module 3: PromQL** (Days 9-16)
+### 🔍 **Module 3: PromQL** (Days 9-17)
 *Master the query language. Build dashboards. Debug production.*
 
 | Day | Topic | Duration | Learn |
@@ -179,7 +179,7 @@ prometheus-course/
 - **Don't skip Getting Started.** It builds your local environment. Takes 2-3 hours but saves 10+ hours of debugging later.
 - **Type all commands yourself.** Copy-pasting skips learning. Type slowly, understand each step.
 - **Labs are where learning happens.** Read the guide (30m), then struggle through the lab (60m). That struggle is the learning.
-- **Revisit confusing days.** PromQL (Days 9-16) is hard. Come back to it after a break. It clicks suddenly.
+- **Revisit confusing days.** PromQL (Days 9-17) is hard. Come back to it after a break. It clicks suddenly.
 - **Build something real.** After Day 8, instrument a real application. Use what you've learned.
 
 ---

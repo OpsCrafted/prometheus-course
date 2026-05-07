@@ -101,7 +101,7 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 
 ---
 
-## Module 3: PromQL (Days 9–16)
+## Module 3: PromQL (Days 9–17)
 
 *Master the query language. Build dashboards. Debug production.*
 

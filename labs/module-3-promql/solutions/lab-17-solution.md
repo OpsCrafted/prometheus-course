@@ -70,6 +70,7 @@ No — all existing alerts have `for:` set. This part of the existing config is 
 
 Service: sample-app
 Date: [today]
+Filled in by: [your name]
 
 ## Metrics Hygiene
 - [x] Request counter exposed (http_requests_total)

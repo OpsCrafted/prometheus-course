@@ -175,6 +175,7 @@ These patterns appear frequently in real alert_rules.yml files and cause alert f
 | No `description` annotation | On-call has no context when paged | Include what happened and why it matters |
 | Using p50 for latency alerts | Median hides tail-latency problems | Use p95 or p99 |
 | Alerting on everything | Noise desensitizes on-call | Alert only on user-impacting symptoms |
+| No severity routing | Everything pages on-call at 3am | Use `severity: page` for immediate action, `warning` for investigate-later |
 
 The existing `app_alerts` group in this course has some of these. You will identify them in the lab.
 
