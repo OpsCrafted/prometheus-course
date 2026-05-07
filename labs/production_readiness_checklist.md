@@ -21,10 +21,10 @@ Use this checklist before promoting any service to production monitoring. Each u
 ## Alerting
 
 - [ ] **InstanceDown** — alert fires when Prometheus cannot scrape the service (`up == 0`)
-- [ ] **HighLatency** — p99 latency alert (use histogram_quantile, not average)
+- [ ] **HighP99Latency** — p99 latency alert (use histogram_quantile, not average)
 - [ ] **ErrorBudgetBurning** — error alert using burn rate, not raw error rate
 - [ ] **TrafficDrop** — alert for unexpected traffic decline
-- [ ] **HighSaturation** — memory or CPU saturation alert
+- [ ] **HighMemorySaturation** — memory or CPU saturation alert
 - [ ] All alerts have `for:` clause (minimum 2m to prevent flapping)
 - [ ] All alerts have `summary` annotation (one-line description of what fired)
 - [ ] All alerts have `description` annotation (what it means, what to check first)
@@ -41,7 +41,7 @@ Use this checklist before promoting any service to production monitoring. Each u
 
 ## SLO
 
-- [ ] Availability SLI defined: `sum(rate(good_requests[5m])) / sum(rate(total_requests[5m]))`
+- [ ] Availability SLI defined: `sum(rate(http_requests_total{status!~"5.."}[5m])) / sum(rate(http_requests_total[5m]))`
 - [ ] SLO target set (e.g., 99%, 99.5%, 99.9%)
 - [ ] Error budget calculated: `1 - SLO_target` (e.g., 0.01 for 99% SLO)
 - [ ] Burn rate alert wired up with correct divisor
