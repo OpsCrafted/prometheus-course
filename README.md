@@ -2,6 +2,7 @@
 
 Master monitoring and observability in 2-3 weeks. Self-paced hands-on course for DevOps/SRE engineers.
 
+> **New here? Start:** [START_HERE.md](START_HERE.md) — opinionated step-by-step path through the course.
 > **Full course index:** [COURSE_INDEX.md](COURSE_INDEX.md)
 
 ---
@@ -101,18 +102,13 @@ Week 1                          Week 2                      Week 3
 ## 🚀 Quick Start (5 minutes)
 
 ```bash
-# 1. Clone course
 git clone https://github.com/OpsCrafted/prometheus-course.git
 cd prometheus-course
-
-# 2. Start Prometheus environment
 make setup
-
-# 3. Open course in browser (optional, or read offline)
-# Read: docs/getting-started/README.md
+make verify
 ```
 
-**Already have Docker running?** You're ready. No other setup needed.
+Then open [START_HERE.md](START_HERE.md) for the step-by-step path.
 
 ---
 
