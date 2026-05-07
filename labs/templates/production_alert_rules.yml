@@ -1,0 +1,75 @@
+groups:
+  - name: production-readiness
+    rules:
+
+      # Maps to: Availability (target health)
+      # Fires when Prometheus cannot scrape a target for 2+ minutes.
+      # 2m for: avoids flapping on restarts. Shorter = too noisy; longer = too slow to page.
+      - alert: InstanceDown
+        expr: up{job="sample-app"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Instance {{ $labels.instance }} is down"
+          description: "Prometheus cannot scrape {{ $labels.instance }} — service may be crashed or unreachable."
+
+      # Maps to: Golden Signal — Latency
+      # Fires when p99 latency stays above 1s for 5 minutes.
+      # Use p99, not p50 — outliers matter more for user experience.
+      # Adjust threshold to match your SLO target.
+      - alert: HighP99Latency
+        expr: |
+          histogram_quantile(0.99,
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (le)
+          ) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "P99 latency above 1 second"
+          description: "99th percentile request latency is {{ $value | humanizeDuration }} — users are experiencing slow responses."
+
+      # Maps to: Golden Signal — Errors
+      # Burn rate > 10 means the error budget is exhausted in ~3 days.
+      # Correct replacement for raw HighErrorRate — captures traffic volume, not just rate.
+      # Assumes 99% availability SLO (0.01 error budget).
+      - alert: ErrorBudgetBurning
+        expr: |
+          (
+            sum(rate(http_requests_total{status=~"5.."}[5m]))
+            /
+            sum(rate(http_requests_total[5m]))
+          ) / 0.01 > 10
+        for: 5m
+        labels:
+          severity: page
+        annotations:
+          summary: "Error budget burn rate too high"
+          description: "Service is burning error budget {{ $value | humanize }}x faster than allowed."
+
+      # Maps to: Golden Signal — Traffic
+      # Fires when request rate drops unexpectedly low.
+      # Traffic drop often means users cannot reach the service even when it appears healthy.
+      # Tune threshold to your expected baseline traffic.
+      - alert: TrafficDrop
+        expr: sum(rate(http_requests_total[5m])) < 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Unexpectedly low traffic"
+          description: "Request rate dropped below 1 req/s — possible load balancer issue or traffic routing failure."
+
+      # Maps to: Golden Signal — Saturation
+      # 85% leaves headroom before OOM killer fires.
+      # 90%+ is critical; 85% gives time to investigate.
+      - alert: HighMemorySaturation
+        expr: |
+          (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Memory usage above 85%"
+          description: "Host memory is {{ $value | humanizePercentage }} used — approaching OOM risk."

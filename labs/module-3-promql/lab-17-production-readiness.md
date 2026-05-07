@@ -160,6 +160,15 @@ Open `labs/production_readiness_checklist.md`. Work through each checkbox for th
 
 This is your exit artifact — a completed checklist you can reuse for any service you instrument.
 
+## Compare Your Work
+
+After finishing, compare your `alert_rules.yml` additions against the canonical templates:
+
+- **Your 5 alerts vs:** [`labs/templates/production_alert_rules.yml`](../../templates/production_alert_rules.yml)
+- **Your burn rate alerts vs:** [`labs/templates/slo_alert_rules.yml`](../../templates/slo_alert_rules.yml)
+
+Differences are not necessarily wrong — thresholds and `for:` durations should match your SLOs, not the template defaults. But any missing annotations or missing `severity` labels are gaps worth fixing.
+
 ## Solution
 
 See `labs/module-3-promql/solutions/lab-17-solution.md`

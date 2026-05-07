@@ -1,0 +1,56 @@
+groups:
+  - name: http-aggregations
+    interval: 30s
+    rules:
+
+      # --- Request rate ---
+      # Replace repeated `rate(http_requests_total[5m])` in dashboards and alerts.
+      # Saves Prometheus from recomputing this on every panel load.
+
+      - record: job:http_requests:rate5m
+        expr: sum(rate(http_requests_total[5m])) by (job)
+
+      - record: job_status:http_requests:rate5m
+        expr: sum(rate(http_requests_total[5m])) by (job, status)
+
+      # --- Error ratio ---
+      # Precomputed for SLO dashboards and burn rate alerts.
+      # Cheaper than recomputing the division on every dashboard refresh.
+
+      - record: job:http_error_ratio:rate5m
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[5m])) by (job)
+          /
+          sum(rate(http_requests_total[5m])) by (job)
+
+      # --- Latency percentiles ---
+      # histogram_quantile is expensive on high-cardinality bucket metrics.
+      # Pre-aggregate the rate over buckets, then compute quantile once per interval.
+
+      - record: job:http_request_duration_seconds_bucket:rate5m
+        expr: sum(rate(http_request_duration_seconds_bucket[5m])) by (job, le)
+
+      # Use the recording rule above in dashboard panels instead of the raw expression:
+      #
+      #   BEFORE (recomputed on every panel load):
+      #     histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
+      #
+      #   AFTER (reads pre-aggregated values):
+      #     histogram_quantile(0.99, job:http_request_duration_seconds_bucket:rate5m)
+
+  - name: system-aggregations
+    interval: 60s
+    rules:
+
+      # --- Memory saturation ---
+      # Used in saturation alerts and the Golden Signals dashboard.
+
+      - record: instance:memory_utilization:ratio
+        expr: |
+          1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)
+
+      # --- CPU saturation ---
+
+      - record: instance:cpu_utilization:rate5m
+        expr: |
+          1 - avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) by (instance)

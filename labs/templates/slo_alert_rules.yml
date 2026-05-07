@@ -1,0 +1,84 @@
+groups:
+  - name: slo-availability
+    rules:
+
+      # SLI: availability = good requests / total requests
+      # Good request = any non-5xx response
+      # Target SLO: 99% (0.01 error budget)
+
+      # --- Recorded SLIs (for dashboards and alert expressions) ---
+
+      # 5-minute error ratio (used for fast-burn alert)
+      - record: job:error_ratio:rate5m
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total[5m]))
+
+      # 1-hour error ratio (used for slow-burn alert and SLO panel)
+      - record: job:error_ratio:rate1h
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[1h]))
+          /
+          sum(rate(http_requests_total[1h]))
+
+      # --- Multi-window burn rate alerts ---
+
+      # Fast-burn: consuming error budget 14x faster than allowed over 5m + 1h windows.
+      # Exhausts 1-hour budget in ~4 minutes. Page immediately.
+      # Requires BOTH windows to agree — reduces false positives from short spikes.
+      - alert: ErrorBudgetFastBurn
+        expr: |
+          job:error_ratio:rate5m / 0.01 > 14
+          and
+          job:error_ratio:rate1h / 0.01 > 14
+        for: 2m
+        labels:
+          severity: page
+          window: fast
+        annotations:
+          summary: "SLO fast burn: error budget exhausting rapidly"
+          description: "Burn rate {{ $value | humanize }}x — at this rate the monthly budget exhausts in under 1 hour."
+
+      # Slow-burn: consuming error budget 2x faster than allowed over 30m + 6h windows.
+      # Exhausts monthly budget in ~15 days. Ticket-worthy, not a page.
+      - record: job:error_ratio:rate30m
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[30m]))
+          /
+          sum(rate(http_requests_total[30m]))
+
+      - record: job:error_ratio:rate6h
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[6h]))
+          /
+          sum(rate(http_requests_total[6h]))
+
+      - alert: ErrorBudgetSlowBurn
+        expr: |
+          job:error_ratio:rate30m / 0.01 > 2
+          and
+          job:error_ratio:rate6h / 0.01 > 2
+        for: 15m
+        labels:
+          severity: warning
+          window: slow
+        annotations:
+          summary: "SLO slow burn: error budget draining"
+          description: "Burn rate {{ $value | humanize }}x — at this rate the monthly budget exhausts in ~15 days."
+
+      # --- Latency SLO ---
+
+      # SLO: 95% of requests complete under 1 second
+      # Fires when p95 latency breaches the threshold for 10 minutes.
+      - alert: LatencySLOBreach
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (le)
+          ) > 1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Latency SLO breach: p95 above 1s"
+          description: "P95 latency is {{ $value | humanizeDuration }} — 5% of users wait longer than the SLO target."
