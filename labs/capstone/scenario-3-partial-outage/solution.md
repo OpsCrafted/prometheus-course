@@ -76,7 +76,7 @@ Then:
    
 2. Or restart Prometheus:
    ```bash
-   docker-compose restart prometheus
+   docker compose restart prometheus
    ```
 
 ## Verification

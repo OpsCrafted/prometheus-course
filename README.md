@@ -164,7 +164,8 @@ prometheus-course/
 │   └── reference/                # Cheatsheets, glossary
 ├── labs/
 │   ├── docker-compose.yml        # Full observability stack (12 services)
-│   ├── prometheus-base.yml       # Scrape config
+│   ├── prometheus.yml            # Scrape config (6 jobs)
+│   ├── alert_rules.yml           # Alerting rules
 │   ├── module-1-fundamentals/    # Day 1-4 labs + solutions
 │   ├── module-2-instrumentation/ # Day 5-8 labs + solutions
 │   └── module-3-promql/          # Day 9-16 labs + solutions

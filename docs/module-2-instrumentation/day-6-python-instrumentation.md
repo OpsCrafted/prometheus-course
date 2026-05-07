@@ -1,4 +1,6 @@
-# Day 6: Python Instrumentation
+# Day 6: Python Instrumentation *(Optional Alternate Track)*
+
+> **Optional:** This is an alternate version of Day 6 for Python shops. Complete the Go version ([day-6-http-metrics.md](day-6-http-metrics.md)) first, or substitute this day if your team writes Python. Do not do both — the concepts are identical.
 
 **Time:** 90 minutes | **Prerequisites:** Day 5 completed
 
