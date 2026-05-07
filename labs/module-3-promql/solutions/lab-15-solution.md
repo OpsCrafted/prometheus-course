@@ -71,7 +71,7 @@ The `le="0.5"` bucket holds counts of requests completing in ≤ 0.5 seconds. Di
 
 ## Exercise 5: Alert Rule
 
-Add to `labs/alert_rules.yml` after the closing `rules:` block of `app_alerts`:
+Add to `labs/alert_rules.yml` as a new entry in the `groups:` list, after the `app_alerts` group:
 
 ```yaml
   - name: slo-alerts
