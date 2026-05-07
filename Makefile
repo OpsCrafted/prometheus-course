@@ -1,4 +1,4 @@
-.PHONY: setup verify down clean reset logs-prometheus logs-grafana logs-app verify-rules verify-day-5 verify-day-9 verify-day-10 verify-day-12 verify-day-13 verify-day-15 verify-day-16 verify-day-11 verify-day-14 help
+.PHONY: setup verify down clean reset logs-prometheus logs-grafana logs-app verify-rules verify-day-5 verify-day-9 verify-day-10 verify-day-12 verify-day-13 verify-day-15 verify-day-16 verify-day-17 verify-day-11 verify-day-14 help
 
 help:
 	@echo "Prometheus Course — Available targets:"
@@ -17,6 +17,7 @@ help:
 	@echo "  make verify-day-13      — Verify Day 13 (PromQL functions)"
 	@echo "  make verify-day-15      — Verify Day 15 (SLOs and burn rates)"
 	@echo "  make verify-day-16      — Verify Day 16 (PromQL capstone)"
+	@echo "  make verify-day-17      — Verify Day 17 (production readiness)"
 
 setup:
 	cd labs && docker compose up -d
@@ -80,6 +81,14 @@ verify-day-16:
 	@echo "Verifying Day 16 (PromQL capstone)..."
 	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=count(up%20%3D%3D%201)' | jq -e '.status == "success" and (.data.result | length > 0)' > /dev/null && echo "✓ boolean comparison (up == 1) works" || (echo "✗ boolean comparison failed"; exit 1)
 	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=sum(rate(http_requests_total%5B5m%5D))%20by%20(endpoint)' | jq -e '.status == "success" and (.data.result | length > 0)' > /dev/null && echo "✓ rate by endpoint works" || (echo "✗ rate by endpoint failed — stack may need 5+ minutes of uptime"; exit 1)
+
+verify-day-17:
+	@echo "Verifying Day 17 (production readiness)..."
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/rules' | jq -e '[.data.groups[].rules[] | select(.name == "InstanceDown")] | length > 0' > /dev/null && echo "✓ InstanceDown alert loaded" || (echo "✗ InstanceDown not found — add production-readiness group to labs/alert_rules.yml"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/rules' | jq -e '[.data.groups[].rules[] | select(.name == "HighP99Latency")] | length > 0' > /dev/null && echo "✓ HighP99Latency alert loaded" || (echo "✗ HighP99Latency not found"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/rules' | jq -e '[.data.groups[].rules[] | select(.name == "ErrorBudgetBurning")] | length > 0' > /dev/null && echo "✓ ErrorBudgetBurning alert loaded" || (echo "✗ ErrorBudgetBurning not found"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/rules' | jq -e '[.data.groups[].rules[] | select(.name == "TrafficDrop")] | length > 0' > /dev/null && echo "✓ TrafficDrop alert loaded" || (echo "✗ TrafficDrop not found"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/rules' | jq -e '[.data.groups[].rules[] | select(.name == "HighMemorySaturation")] | length > 0' > /dev/null && echo "✓ HighMemorySaturation alert loaded" || (echo "✗ HighMemorySaturation not found"; exit 1)
 
 verify-rules:
 	cd labs && docker compose exec prometheus promtool check rules /etc/prometheus/alert_rules.yml

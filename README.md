@@ -92,6 +92,7 @@ Week 1                          Week 2                      Week 3
 | 1️⃣4️⃣ | [Histograms](docs/module-3-promql/day-14-histograms.md) | 90m | Percentiles, latency analysis |
 | 1️⃣5️⃣ | [SLOs & Burn Rates](docs/module-3-promql/day-15-slos-burn-rates.md) | 90m | SLI, error budget, burn rate alerting |
 | 1️⃣6️⃣ | [Capstone](docs/module-3-promql/day-16-capstone.md) | 4-6h | 3 real-world challenges |
+| 1️⃣7️⃣ | [Production Readiness](docs/module-3-promql/day-17-production-readiness.md) | 90m | 5 essential alerts, Golden Signals, checklist |
 
 **After Module 3:** You can write any PromQL query, build dashboards, and solve monitoring problems.
 

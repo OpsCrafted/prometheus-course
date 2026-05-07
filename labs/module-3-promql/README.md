@@ -1,6 +1,6 @@
 # Module 3: PromQL — Labs
 
-Labs for Days 9–16. Run queries at http://localhost:9090.
+Labs for Days 9–17. Run queries at http://localhost:9090.
 
 | Lab | File | What you build |
 |-----|------|----------------|
@@ -12,6 +12,7 @@ Labs for Days 9–16. Run queries at http://localhost:9090.
 | Lab 14 | [lab-14-histograms.md](lab-14-histograms.md) | histogram_quantile(), p50/p95/p99 latency analysis |
 | Lab 15 | [lab-15-slos-burn-rates.md](lab-15-slos-burn-rates.md) | SLI queries, error budget, burn rate, multi-window alert, Grafana SLO panel |
 | Lab 16 | [lab-16-capstone.md](lab-16-capstone.md) | Multi-step real-world queries: SLA monitoring, capacity planning |
+| Lab 17 | [lab-17-production-readiness.md](lab-17-production-readiness.md) | 5 essential alerts, Golden Signals dashboard, production readiness checklist |
 
 Solutions: [solutions/](solutions/)
 

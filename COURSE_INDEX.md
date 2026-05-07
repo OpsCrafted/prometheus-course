@@ -161,7 +161,15 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 - **Topics:** Multi-step queries, health checks, SLA monitoring, capacity planning
 - **Time:** 90 minutes
 
-**Total Module 3:** 12 hours
+### Day 17: Production Readiness Checklist
+- **Guide:** `docs/module-3-promql/day-17-production-readiness.md`
+- **Lab:** `labs/module-3-promql/lab-17-production-readiness.md`
+- **Solution:** `labs/module-3-promql/solutions/lab-17-solution.md`
+- **Artifact:** `labs/production_readiness_checklist.md`
+- **Topics:** Metrics hygiene, safe labels, 4 Golden Signals, 5 essential alerts, anti-patterns
+- **Time:** 90 minutes
+
+**Total Module 3:** 13.5 hours
 
 ---
 
@@ -216,9 +224,9 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 
 | Component | Count |
 |-----------|-------|
-| Day guides | 16 |
-| Labs | 16 |
-| Solutions | 16 |
+| Day guides | 17 |
+| Labs | 17 |
+| Solutions | 17 |
 | Core capstone scenarios | 3 |
 | Extended capstone labs | 5 |
 | Reference docs | 4 |
@@ -228,6 +236,6 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 | Getting Started | 2–3 hours |
 | Module 1: Fundamentals | 6 hours |
 | Module 2: Instrumentation | 6 hours |
-| Module 3: PromQL | 12 hours |
+| Module 3: PromQL | 13.5 hours |
 | Core Capstone | 3–4 hours |
-| **Total (core path)** | **~29.5 hours** |
+| **Total (core path)** | **~31 hours** |
