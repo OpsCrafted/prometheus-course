@@ -65,6 +65,58 @@ With 4 methods × 10 statuses × 1000 paths = 40,000 series. AVOID!
 
 With 4 methods × 10 statuses × 5 normalized paths = 200 series. GOOD.
 
+## Diagnosing a Cardinality Problem
+
+Rules are easy to forget. The investigation pattern is harder to forget.
+
+**Scenario:** Prometheus memory is climbing. Queries are slow. You suspect cardinality. Here's how to diagnose it:
+
+**Step 1: Count total series**
+
+```promql
+count({__name__=~".+"})
+```
+
+Healthy stacks: a few thousand. If you see 100k+, something is wrong.
+
+**Step 2: Find the biggest metrics**
+
+```promql
+topk(10, count by (__name__)({__name__=~".+"}))
+```
+
+This shows which metrics have the most series. The culprit will stand out — a metric with 10,000 series when others have 10.
+
+**Step 3: Find the high-cardinality label**
+
+Say `http_requests_total` shows 8,000 series. Inspect its labels:
+
+```promql
+count by (path)(http_requests_total)
+```
+
+If you see one row per URL path — `/api/users/1`, `/api/users/2`, `/api/users/3` — you've found it. `path` is unbounded.
+
+**Step 4: Fix — normalize the label**
+
+In your instrumentation, replace:
+
+```go
+// Before: unbounded cardinality
+httpRequests.WithLabelValues(r.URL.Path).Inc()
+
+// After: normalized path, cardinality stays bounded
+httpRequests.WithLabelValues(normalizeRoute(r.URL.Path)).Inc()
+```
+
+Where `normalizeRoute` replaces `/api/users/123` with `/api/users/{id}`.
+
+**Step 5: Verify the fix**
+
+Restart the app, wait 2 minutes, re-run Step 2. Series count for that metric should drop dramatically. Old high-cardinality series will age out of Prometheus within `--storage.tsdb.retention.time` (default 15d), but new scrapes will only create the bounded set.
+
+This four-query investigation is the same one you'll run in production. The naming rules below are how you avoid needing it.
+
 ## Best Practices Checklist
 
 - [ ] Metric name follows convention

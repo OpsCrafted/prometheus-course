@@ -8,6 +8,27 @@
 - [ ] Track business metrics (users, orders, etc.)
 - [ ] Update gauges periodically
 
+## The Problem Gauges Solve
+
+Your sample-app is running. Requests look fine in Prometheus — `rate(http_requests_total[5m])` is normal. But users are reporting slow responses. You have no idea why.
+
+The problem is you can only see *throughput*, not *state*. You cannot see:
+- How many requests are queued right now?
+- How many database connections are open?
+- Is the in-memory cache full?
+
+Counters don't help here — they only go up. You need something that can go up *and* down: a **gauge**.
+
+Add a gauge, deploy, wait 30 seconds. Now run:
+
+```promql
+app_queue_length
+```
+
+If you see the value climbing while request latency climbs, you've just diagnosed the problem in one query.
+
+That's what gauges are for: visibility into current state that counters can't give you.
+
 ## Conceptual Explainer
 
 Gauges are useful for non-cumulative measurements:
@@ -92,6 +113,25 @@ go func() {
     }
 }()
 ```
+
+## Query Your Gauges
+
+After wiring up the code above, verify in Prometheus:
+
+```promql
+# Current state
+app_active_connections
+app_queue_length
+
+# Watch for saturation: is the queue near capacity?
+app_queue_length > 10
+
+# Correlation: does queue length rise when latency rises?
+app_queue_length
+rate(http_request_duration_seconds_sum[1m]) / rate(http_request_duration_seconds_count[1m])
+```
+
+Run both queries side-by-side in Prometheus Graph view. If `app_queue_length` and latency trend together, you've confirmed the queue is the bottleneck. This is the diagnostic loop gauges enable.
 
 ## Key Concepts
 
