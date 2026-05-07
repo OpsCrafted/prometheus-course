@@ -101,7 +101,7 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 
 ---
 
-## Module 3: PromQL (Days 9–15)
+## Module 3: PromQL (Days 9–16)
 
 *Master the query language. Build dashboards. Debug production.*
 
@@ -147,10 +147,10 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 - **Topics:** Histogram buckets, histogram_quantile(), percentiles, p50/p95/p99
 - **Time:** 90 minutes
 
-### Day 15: PromQL Capstone
-- **Guide:** `docs/module-3-promql/day-15-capstone.md`
-- **Lab:** `labs/module-3-promql/lab-15-capstone.md`
-- **Solution:** `labs/module-3-promql/solutions/lab-15-solution.md`
+### Day 16: PromQL Capstone
+- **Guide:** `docs/module-3-promql/day-16-capstone.md`
+- **Lab:** `labs/module-3-promql/lab-16-capstone.md`
+- **Solution:** `labs/module-3-promql/solutions/lab-16-solution.md`
 - **Topics:** Multi-step queries, health checks, SLA monitoring, capacity planning
 - **Time:** 90 minutes
 

@@ -1,4 +1,4 @@
-# Lab 15 Solution: PromQL Capstone
+# Lab 16 Solution: PromQL Capstone
 
 ## Challenge 1: Health Check
 
@@ -12,7 +12,7 @@ Returns: Series with up=0
 ```
 count(up == 1)
 ```
-Returns: 2 (or your count)
+Returns: 6 (one per scrape job)
 
 **DOWN targets:**
 ```

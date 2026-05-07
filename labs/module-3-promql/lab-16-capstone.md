@@ -1,4 +1,4 @@
-# Lab 15: PromQL Capstone Challenges
+# Lab 16: PromQL Capstone Challenges
 
 **Time:** 40-50 minutes  
 **Goal:** Solve real-world queries

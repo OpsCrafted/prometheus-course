@@ -79,7 +79,7 @@ Week 1                          Week 2                      Week 3
 
 ---
 
-### 🔍 **Module 3: PromQL** (Days 9-15)
+### 🔍 **Module 3: PromQL** (Days 9-16)
 *Master the query language. Build dashboards. Debug production.*
 
 | Day | Topic | Duration | Learn |
@@ -90,7 +90,7 @@ Week 1                          Week 2                      Week 3
 | 1️⃣2️⃣ | [Joins & Matching](docs/module-3-promql/day-12-joins.md) | 90m | Multi-metric correlation |
 | 1️⃣3️⃣ | [Functions](docs/module-3-promql/day-13-functions.md) | 90m | Mathematical operators |
 | 1️⃣4️⃣ | [Histograms](docs/module-3-promql/day-14-histograms.md) | 90m | Percentiles, latency analysis |
-| 1️⃣5️⃣ | [Capstone](docs/module-3-promql/day-15-capstone.md) | 4-6h | 3 real-world challenges |
+| 1️⃣6️⃣ | [Capstone](docs/module-3-promql/day-16-capstone.md) | 4-6h | 3 real-world challenges |
 
 **After Module 3:** You can write any PromQL query, build dashboards, and solve monitoring problems.
 
@@ -142,7 +142,7 @@ Track your progress:
   - Custom metrics exported to Prometheus
   - Dashboard shows your metrics
 
-- [ ] **Week 3:** Complete Days 9-15 (PromQL + Capstone Scenarios)
+- [ ] **Week 3:** Complete Days 9-16 (PromQL + Capstone Scenarios)
   - Write 10+ different PromQL queries
   - Complete the 3 core capstone scenarios (Latency Spike, Cardinality Explosion, Partial Outage)
   - Build a custom dashboard from scratch
@@ -157,7 +157,7 @@ prometheus-course/
 │   ├── getting-started/          # Docker setup, first steps
 │   ├── module-1-fundamentals/    # Days 1-4 guides
 │   ├── module-2-instrumentation/ # Days 5-8 guides
-│   ├── module-3-promql/          # Days 9-15 guides
+│   ├── module-3-promql/          # Days 9-16 guides
 │   ├── capstone/                 # Final challenges
 │   └── reference/                # Cheatsheets, glossary
 ├── labs/
@@ -165,7 +165,7 @@ prometheus-course/
 │   ├── prometheus-base.yml       # Scrape config
 │   ├── module-1-fundamentals/    # Day 1-4 labs + solutions
 │   ├── module-2-instrumentation/ # Day 5-8 labs + solutions
-│   └── module-3-promql/          # Day 9-15 labs + solutions
+│   └── module-3-promql/          # Day 9-16 labs + solutions
 └── Makefile                      # Setup, reset, cleanup
 
 ```
@@ -177,7 +177,7 @@ prometheus-course/
 - **Don't skip Getting Started.** It builds your local environment. Takes 2-3 hours but saves 10+ hours of debugging later.
 - **Type all commands yourself.** Copy-pasting skips learning. Type slowly, understand each step.
 - **Labs are where learning happens.** Read the guide (30m), then struggle through the lab (60m). That struggle is the learning.
-- **Revisit confusing days.** PromQL (Days 9-15) is hard. Come back to it after a break. It clicks suddenly.
+- **Revisit confusing days.** PromQL (Days 9-16) is hard. Come back to it after a break. It clicks suddenly.
 - **Build something real.** After Day 8, instrument a real application. Use what you've learned.
 
 ---

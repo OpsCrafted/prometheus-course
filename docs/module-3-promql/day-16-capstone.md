@@ -1,6 +1,6 @@
-# Day 15: PromQL Capstone & Review
+# Day 16: PromQL Capstone & Review
 
-**Time:** 90 minutes | **Prerequisites:** Days 9-14 completed
+**Time:** 90 minutes | **Prerequisites:** Days 9-15 completed
 
 ## Learning Outcomes
 
@@ -46,7 +46,7 @@ histogram_quantile(0.95, metric_bucket)
 
 ## Capstone Challenges
 
-See [lab-15-capstone.md](../../labs/module-3-promql/lab-15-capstone.md)
+See [lab-16-capstone.md](../../labs/module-3-promql/lab-16-capstone.md)
 
 ## Query Optimization
 
