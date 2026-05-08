@@ -1,4 +1,4 @@
-.PHONY: setup verify down clean reset logs-prometheus logs-grafana logs-app verify-rules verify-day-5 verify-day-9 verify-day-10 verify-day-12 verify-day-13 verify-day-15 verify-day-16 verify-day-17 verify-day-11 verify-day-14 help
+.PHONY: setup verify down clean reset logs-prometheus logs-grafana logs-app verify-rules verify-day-5 verify-day-9 verify-day-10 verify-day-12 verify-day-13 verify-day-15 verify-day-16 verify-day-17 verify-day-11 verify-day-14 verify-day-18 help
 
 help:
 	@echo "Prometheus Course — Available targets:"
@@ -18,6 +18,7 @@ help:
 	@echo "  make verify-day-15      — Verify Day 15 (SLOs and burn rates)"
 	@echo "  make verify-day-16      — Verify Day 16 (PromQL capstone)"
 	@echo "  make verify-day-17      — Verify Day 17 (production readiness)"
+	@echo "  make verify-day-18      — Verify Day 18 (recording rules)"
 
 setup:
 	cd labs && docker compose up -d
@@ -89,6 +90,12 @@ verify-day-17:
 	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/rules' | jq -e '[.data.groups[].rules[] | select(.name == "ErrorBudgetBurning")] | length > 0' > /dev/null && echo "✓ ErrorBudgetBurning alert loaded" || (echo "✗ ErrorBudgetBurning not found"; exit 1)
 	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/rules' | jq -e '[.data.groups[].rules[] | select(.name == "TrafficDrop")] | length > 0' > /dev/null && echo "✓ TrafficDrop alert loaded" || (echo "✗ TrafficDrop not found"; exit 1)
 	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/rules' | jq -e '[.data.groups[].rules[] | select(.name == "HighMemorySaturation")] | length > 0' > /dev/null && echo "✓ HighMemorySaturation alert loaded" || (echo "✗ HighMemorySaturation not found"; exit 1)
+
+verify-day-18:
+	@echo "Verifying Day 18 (recording rules)..."
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/rules' | jq -e '[.data.groups[].rules[] | select(.type == "recording")] | length >= 3' > /dev/null && echo "✓ 3+ recording rules loaded" || (echo "✗ recording rules not found — add recordings group to labs/alert_rules.yml and reload"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=job:http_requests:rate5m' | jq -e '.data.result | length > 0' > /dev/null && echo "✓ job:http_requests:rate5m metric exists" || (echo "✗ job:http_requests:rate5m not found — wait 30s for first evaluation then retry"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=job:http_request_duration_seconds_bucket:rate5m' | jq -e '.data.result | length > 0' > /dev/null && echo "✓ job:http_request_duration_seconds_bucket:rate5m metric exists" || (echo "✗ bucket recording rule not found"; exit 1)
 
 verify-rules:
 	cd labs && docker compose exec prometheus promtool check rules /etc/prometheus/alert_rules.yml

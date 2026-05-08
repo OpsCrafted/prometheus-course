@@ -85,10 +85,11 @@ If `make verify` fails, stop here and fix it. Do not proceed to Day 1 with a bro
 | Read [day-15](docs/module-3-promql/day-15-slos-burn-rates.md), complete [lab-15](labs/module-3-promql/lab-15-slos-burn-rates.md) | `make verify-day-15` passes |
 | Read [day-16](docs/module-3-promql/day-16-capstone.md), complete [lab-16](labs/module-3-promql/lab-16-capstone.md) | `make verify-day-16` passes |
 | Read [day-17](docs/module-3-promql/day-17-production-readiness.md), complete [lab-17](labs/module-3-promql/lab-17-production-readiness.md) | `make verify-day-17` passes |
+| Read [day-18](docs/module-3-promql/day-18-recording-rules.md), complete [lab-18](labs/module-3-promql/lab-18-recording-rules.md) | `make verify-day-18` passes |
 
-**Module 3 done when:** All `make verify-day-*` targets pass and you have a completed production readiness checklist.
+**Module 3 done when:** All `make verify-day-*` targets pass, production readiness checklist completed, and dashboard panels updated to use recording rules.
 
-**Time: 13.5 hours.**
+**Time: 15 hours.**
 
 ---
 
@@ -120,6 +121,7 @@ Three real-world debugging scenarios. Do these after Day 16 if you want producti
 | Module 2 | Write Go code that exports a counter, confirm it in Prometheus UI |
 | Day 15 | Write a burn rate alert, explain why raw error rate is wrong |
 | Day 17 | Wire 5 production alerts, complete the readiness checklist |
+| Day 18 | Add recording rules, dashboard panels read pre-computed metrics |
 | Capstone | Diagnose all 3 incidents using only PromQL |
 
 ---
