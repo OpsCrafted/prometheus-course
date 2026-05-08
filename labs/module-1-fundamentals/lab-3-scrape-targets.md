@@ -50,9 +50,12 @@ You should see 9 jobs now:
 - postgres-exporter (UP)
 - redis-exporter (UP)
 - blackbox (UP)
+- pushgateway (UP — added in Lab 1)
 - redis (DOWN — fake target, doesn't expose /metrics)
 - mysql (DOWN — fake target, doesn't exist)
 - my-app (DOWN — fake target, doesn't exist)
+
+Wait — that's 10. If you haven't done Lab 1 yet, you'll see 8 (without pushgateway). If you have, you'll see 9 real jobs + 3 fake = 10 total (7 UP, 3 DOWN).
 
 **Step 4:** Query in Graph tab
 
@@ -60,7 +63,7 @@ You should see 9 jobs now:
 count(up)
 ```
 
-Should show `6` (prometheus, node-exporter, sample-app, postgres-exporter, redis-exporter, blackbox).
+Should show `6` or `7` depending on whether you completed Lab 1 (which adds pushgateway). The 3 fake DOWN jobs don't appear in `count(up)` — that query only counts targets currently UP.
 
 ## Solution
 
@@ -70,4 +73,4 @@ See `labs/module-1-fundamentals/solutions/lab-3-solution.yml`
 
 - [ ] Added 3 new jobs to config
 - [ ] Prometheus reloaded successfully
-- [ ] Can see 9 jobs in Targets tab (6 UP, 3 DOWN)
+- [ ] Can see 3 new DOWN jobs in Targets tab alongside existing UP jobs

@@ -238,9 +238,9 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 
 | Component | Count |
 |-----------|-------|
-| Day guides | 17 |
-| Labs | 17 |
-| Solutions | 17 |
+| Day guides | 19 |
+| Labs | 19 |
+| Solutions | 19 |
 | Core capstone scenarios | 3 |
 | Extended capstone labs | 5 |
 | Reference docs | 4 |
