@@ -1,5 +1,7 @@
 labs/prometheus-data/
 .superpowers/
+.claude/
+docs/superpowers/
 *.swp
 .DS_Store
 .git/
