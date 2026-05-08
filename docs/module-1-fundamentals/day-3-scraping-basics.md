@@ -134,6 +134,31 @@ scrape_configs:
 
 **Global defaults apply to all jobs unless overridden.**
 
+**Going beyond static configs:** In production, Prometheus uses service discovery (Kubernetes, Consul, EC2) to find targets automatically. See [service-discovery.md](../../docs/reference/service-discovery.md) for patterns and config examples.
+
+## When Static Configs Don't Work: Pushgateway
+
+Prometheus pulls from targets. This fails for two cases:
+- **Short-lived jobs** (cron jobs, batch pipelines) — the job finishes before Prometheus scrapes it
+- **Firewalled targets** — Prometheus can't reach the service directly
+
+The **Pushgateway** solves this: the job *pushes* its metrics to the gateway, which Prometheus then scrapes normally. The gateway is already running in your stack at port 9091.
+
+```
+cron-job → push metrics → pushgateway:9091 ← scrape ← prometheus
+```
+
+Example push from a shell script:
+
+```bash
+echo "backup_duration_seconds 42" | curl --data-binary @- \
+  http://localhost:9091/metrics/job/backup_job
+```
+
+Prometheus then picks up `backup_duration_seconds{job="backup_job"}` on the next scrape.
+
+**Important:** Pushgateway is not a general-purpose metrics proxy. Don't use it for long-running services — they should expose `/metrics` directly. Use it only for jobs that can't be scraped (short-lived or unreachable).
+
 ## Lab
 
 See [lab-3-scrape-targets.md](../../labs/module-1-fundamentals/lab-3-scrape-targets.md)

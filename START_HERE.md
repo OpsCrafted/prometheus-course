@@ -86,10 +86,11 @@ If `make verify` fails, stop here and fix it. Do not proceed to Day 1 with a bro
 | Read [day-16](docs/module-3-promql/day-16-capstone.md), complete [lab-16](labs/module-3-promql/lab-16-capstone.md) | `make verify-day-16` passes |
 | Read [day-17](docs/module-3-promql/day-17-production-readiness.md), complete [lab-17](labs/module-3-promql/lab-17-production-readiness.md) | `make verify-day-17` passes |
 | Read [day-18](docs/module-3-promql/day-18-recording-rules.md), complete [lab-18](labs/module-3-promql/lab-18-recording-rules.md) | `make verify-day-18` passes |
+| Read [day-19](docs/module-3-promql/day-19-alertmanager.md), complete [lab-19](labs/module-3-promql/lab-19-alertmanager.md) | `make verify-day-19` passes |
 
-**Module 3 done when:** All `make verify-day-*` targets pass, production readiness checklist completed, and dashboard panels updated to use recording rules.
+**Module 3 done when:** All `make verify-day-*` targets pass, production readiness checklist completed, and Alertmanager routing configured.
 
-**Time: 15 hours.**
+**Time: 16 hours.**
 
 ---
 
@@ -123,6 +124,7 @@ Three real-world debugging scenarios. Do these after Day 16 if you want producti
 | Day 15 | Write a burn rate alert, explain why raw error rate is wrong |
 | Day 17 | Wire 5 production alerts, complete the readiness checklist |
 | Day 18 | Add recording rules, dashboard panels read pre-computed metrics |
+| Day 19 | Configure Alertmanager routing — alerts go to the right people |
 | Capstone | Diagnose all 3 incidents using only PromQL |
 
 ---

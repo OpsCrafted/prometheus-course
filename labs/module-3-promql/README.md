@@ -1,6 +1,6 @@
 # Module 3: PromQL — Labs
 
-Labs for Days 9–18. Run queries at http://localhost:9090.
+Labs for Days 9–19. Run queries at http://localhost:9090.
 
 | Lab | File | What you build |
 |-----|------|----------------|
@@ -14,6 +14,7 @@ Labs for Days 9–18. Run queries at http://localhost:9090.
 | Lab 16 | [lab-16-capstone.md](lab-16-capstone.md) | Multi-step real-world queries: SLA monitoring, capacity planning |
 | Lab 17 | [lab-17-production-readiness.md](lab-17-production-readiness.md) | 5 essential alerts, Golden Signals dashboard, production readiness checklist |
 | Lab 18 | [lab-18-recording-rules.md](lab-18-recording-rules.md) | Recording rules, pre-aggregated metrics, dashboard panel replacement |
+| Lab 19 | [lab-19-alertmanager.md](lab-19-alertmanager.md) | Alertmanager routing, inhibition, silences |
 
 Solutions: [solutions/](solutions/)
 

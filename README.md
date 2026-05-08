@@ -80,7 +80,7 @@ Week 1                          Week 2                      Week 3
 
 ---
 
-### 🔍 **Module 3: PromQL** (Days 9-18)
+### 🔍 **Module 3: PromQL** (Days 9-19)
 *Master the query language. Build dashboards. Debug production.*
 
 | Day | Topic | Duration | Learn |
@@ -95,8 +95,9 @@ Week 1                          Week 2                      Week 3
 | 1️⃣6️⃣ | [Capstone](docs/module-3-promql/day-16-capstone.md) | 4-6h | 3 real-world challenges |
 | 1️⃣7️⃣ | [Production Readiness](docs/module-3-promql/day-17-production-readiness.md) | 90m | 5 essential alerts, Golden Signals, checklist |
 | 1️⃣8️⃣ | [Recording Rules](docs/module-3-promql/day-18-recording-rules.md) | 45m | Pre-aggregate expensive queries, faster dashboards |
+| 1️⃣9️⃣ | [Alertmanager](docs/module-3-promql/day-19-alertmanager.md) | 60m | Routing, grouping, inhibition, silences |
 
-**After Module 3:** You can write any PromQL query, build dashboards, and solve monitoring problems.
+**After Module 3:** You can write any PromQL query, build dashboards, alert correctly, and route notifications to the right people.
 
 ---
 
@@ -156,7 +157,7 @@ prometheus-course/
 │   ├── getting-started/          # Docker setup, first steps
 │   ├── module-1-fundamentals/    # Days 1-4 guides
 │   ├── module-2-instrumentation/ # Days 5-8 guides
-│   ├── module-3-promql/          # Days 9-17 guides
+│   ├── module-3-promql/          # Days 9-19 guides
 │   ├── capstone/                 # Final challenges
 │   └── reference/                # Cheatsheets, glossary
 ├── labs/
@@ -165,7 +166,7 @@ prometheus-course/
 │   ├── alert_rules.yml           # Alerting rules
 │   ├── module-1-fundamentals/    # Day 1-4 labs + solutions
 │   ├── module-2-instrumentation/ # Day 5-8 labs + solutions
-│   └── module-3-promql/          # Day 9-17 labs + solutions
+│   └── module-3-promql/          # Day 9-19 labs + solutions
 └── Makefile                      # Setup, reset, cleanup
 
 ```

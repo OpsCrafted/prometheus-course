@@ -101,7 +101,7 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 
 ---
 
-## Module 3: PromQL (Days 9–18)
+## Module 3: PromQL (Days 9–19)
 
 *Master the query language. Build dashboards. Debug production.*
 
@@ -176,7 +176,14 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 - **Topics:** Recording rule naming convention, pre-aggregating expensive queries, before/after dashboard panel replacement
 - **Time:** 45 minutes
 
-**Total Module 3:** 15 hours
+### Day 19: Alertmanager — Routing and Delivery
+- **Guide:** `docs/module-3-promql/day-19-alertmanager.md`
+- **Lab:** `labs/module-3-promql/lab-19-alertmanager.md`
+- **Solution:** `labs/module-3-promql/solutions/lab-19-solution.md`
+- **Topics:** Routing tree, grouping, inhibition, silences, webhook receivers
+- **Time:** 60 minutes
+
+**Total Module 3:** 16 hours
 
 ---
 
@@ -243,6 +250,6 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 | Getting Started | 2–3 hours |
 | Module 1: Fundamentals | 6 hours |
 | Module 2: Instrumentation | 6 hours |
-| Module 3: PromQL | 15 hours |
+| Module 3: PromQL | 16 hours |
 | Core Capstone | 3–4 hours |
-| **Total (core path)** | **~32.5 hours** |
+| **Total (core path)** | **~33.5 hours** |
