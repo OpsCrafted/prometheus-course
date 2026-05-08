@@ -234,6 +234,22 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 
 ---
 
+## Source of Truth
+
+When you see conflicting numbers anywhere in the course, these are authoritative:
+
+| Fact | Value |
+|------|-------|
+| Services in Docker Compose stack | **12** |
+| Prometheus scrape targets (base) | **6** (prometheus, node-exporter, sample-app, postgres-exporter, redis-exporter, blackbox) |
+| Prometheus scrape targets after Lab 1 | **7** (+ pushgateway) |
+| Day 16 PromQL challenges | **5** |
+| Core capstone scenarios (labs/capstone/) | **3** (Latency Spike, Cardinality Explosion, Partial Outage) |
+| Course total (core path) | **~36 hours** |
+| Recommended pace | **8–10 hours/week over 3–4 weeks** |
+
+---
+
 ## Course Statistics
 
 | Component | Count |

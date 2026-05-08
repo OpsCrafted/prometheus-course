@@ -70,7 +70,7 @@ If `make verify` fails, stop here and fix it. Do not proceed to Day 1 with a bro
 
 ---
 
-## Step 4: Module 3 — PromQL (Days 9-17)
+## Step 4: Module 3 — PromQL (Days 9-19)
 
 *Goal: write any query, build dashboards, alert correctly.*
 

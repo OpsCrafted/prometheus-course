@@ -147,7 +147,7 @@ docker compose up -d
 
 Expected output:
 ```
-[+] Running 11/11
+[+] Running 12/12
  - Container labs-prometheus-1         Started
  - Container labs-grafana-1            Started
  - Container labs-alertmanager-1       Started
@@ -159,6 +159,7 @@ Expected output:
  - Container labs-postgres-exporter-1  Started
  - Container labs-redis-1              Started
  - Container labs-redis-exporter-1     Started
+ - Container labs-pushgateway-1        Started
 ```
 
 `-d` means "detached" (runs in background). If you want to see logs, use `docker compose up` without `-d` (Ctrl+C to stop).

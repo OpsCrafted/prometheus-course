@@ -39,7 +39,7 @@ Before starting, verify you have:
 
 ```
 Week 1                          Week 2                      Week 3-4
-├─ Getting Started (2-3h)       ├─ Days 5-8               ├─ Days 13-19
+├─ Getting Started (2-3h)       ├─ Days 5-8               ├─ Days 9-19
 ├─ Days 1-4 (6-8h)            │  Instrumentation        │  PromQL + Production
 │  Fundamentals               │  (6-8h)                │  (18.5h)
 │                             │                         │
@@ -92,12 +92,26 @@ Week 1                          Week 2                      Week 3-4
 | 1️⃣3️⃣ | [Functions](docs/module-3-promql/day-13-functions.md) | 90m | Mathematical operators |
 | 1️⃣4️⃣ | [Histograms](docs/module-3-promql/day-14-histograms.md) | 90m | Percentiles, latency analysis |
 | 1️⃣5️⃣ | [SLOs & Burn Rates](docs/module-3-promql/day-15-slos-burn-rates.md) | 90m | SLI, error budget, burn rate alerting |
-| 1️⃣6️⃣ | [Capstone](docs/module-3-promql/day-16-capstone.md) | 4-6h | 3 real-world challenges |
+| 1️⃣6️⃣ | [Capstone](docs/module-3-promql/day-16-capstone.md) | 4-6h | 5 PromQL challenges |
 | 1️⃣7️⃣ | [Production Readiness](docs/module-3-promql/day-17-production-readiness.md) | 90m | 5 essential alerts, Golden Signals, checklist |
 | 1️⃣8️⃣ | [Recording Rules](docs/module-3-promql/day-18-recording-rules.md) | 45m | Pre-aggregate expensive queries, faster dashboards |
 | 1️⃣9️⃣ | [Alertmanager](docs/module-3-promql/day-19-alertmanager.md) | 60m | Routing, grouping, inhibition, silences |
 
 **After Module 3:** You can write any PromQL query, build dashboards, alert correctly, and route notifications to the right people.
+
+---
+
+## 🛤️ Learning Tracks
+
+Not everyone has 36 hours up front. Pick your track:
+
+| Track | Time | What you get |
+|-------|------|-------------|
+| **Fast** (weekend) | 8–10h | Getting Started + Module 1 + Days 9–11. You can query real metrics and understand what you're reading. |
+| **Standard** (3 weeks) | ~36h | Full core path, all 19 days + capstone. Production-ready skills. |
+| **Deep** (4 weeks+) | ~50h+ | Standard path + all extended capstone scenarios + bonus content. Conference-talk level fluency. |
+
+Already know Go? Skip or skim Days 5–8. Already have Prometheus in production? Start at Day 9.
 
 ---
 
@@ -178,7 +192,7 @@ prometheus-course/
 - **Don't skip Getting Started.** It builds your local environment. Takes 2-3 hours but saves 10+ hours of debugging later.
 - **Type all commands yourself.** Copy-pasting skips learning. Type slowly, understand each step.
 - **Labs are where learning happens.** Read the guide (30m), then struggle through the lab (60m). That struggle is the learning.
-- **Revisit confusing days.** PromQL (Days 9-17) is hard. Come back to it after a break. It clicks suddenly.
+- **Revisit confusing days.** PromQL (Days 9-19) is hard. Come back to it after a break. It clicks suddenly.
 - **Build something real.** After Day 8, instrument a real application. Use what you've learned.
 
 ---
@@ -192,12 +206,41 @@ prometheus-course/
 
 ---
 
+## 🔧 Troubleshooting Quick Reference
+
+**Setup failing?** → [Getting Started troubleshooting](docs/getting-started/README.md#troubleshooting) — covers port conflicts, container exits, permission errors.
+
+**Targets showing DOWN?** → Wait 30 seconds and refresh. If still DOWN: `make logs-prometheus` and look for config errors.
+
+**Query returns no data?** → Check that target is UP (`Status → Targets`). Try `up` first. If Prometheus just started, wait 60 seconds.
+
+**PromQL confusing?** → Days 9-19 build on each other. If Day 12 doesn't make sense, reread Day 9. It clicks suddenly.
+
+**Lab answer doesn't match solution?** → Numbers vary by system (CPU seconds, memory bytes). Focus on query structure, not exact values.
+
+---
+
 ## 📞 Questions or Issues?
 
 - **Course content:** Review the specific day's guide (likely answers your question)
-- **Docker issues:** See Getting Started troubleshooting section
-- **PromQL confusion:** Days 9-17 build on each other. Revisit earlier days if stuck
+- **Docker issues:** See [Getting Started troubleshooting](docs/getting-started/README.md#troubleshooting)
+- **PromQL confusion:** Days 9-19 build on each other. Revisit earlier days if stuck
 - **Contribution:** Found a typo or unclear section? Open an issue.
+
+---
+
+## 🎯 Job-Readiness Rubric
+
+After completing this course, you should be able to pass a monitoring interview or take on-call ownership of a Prometheus stack. Here's what "ready" means at each level:
+
+| Level | You can... |
+|-------|-----------|
+| **Week 1 complete** | Deploy Prometheus from scratch, explain the pull model, add a scrape target, debug a DOWN target |
+| **Week 2 complete** | Write Go code that exports a counter/gauge/histogram, confirm metrics in Prometheus UI, explain cardinality risk |
+| **Day 15 complete** | Write a burn rate alert, explain why raw error rate is insufficient for SLOs, calculate error budget |
+| **Day 17 complete** | Wire 5 production alerts (error rate, latency p99, saturation, target down, job absent), complete readiness checklist |
+| **Day 19 complete** | Configure Alertmanager routing tree — critical alerts page on-call, warnings go to Slack, inhibition prevents noise storms |
+| **Capstone complete** | Diagnose a latency spike, a cardinality explosion, and a partial outage using only PromQL |
 
 ---
 
@@ -238,3 +281,7 @@ Your support helps keep this course free and continuously updated.
 **Ready?** [Start with Getting Started](docs/getting-started/README.md) → 2-3 hours, hands-on, no prerequisites beyond Docker.
 
 Happy monitoring! 📈
+
+---
+
+*Course v1.0 — 19 days, 12-service lab stack, ~36 hours. Last updated May 2026.*
