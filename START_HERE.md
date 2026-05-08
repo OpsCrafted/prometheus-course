@@ -2,7 +2,7 @@
 
 Opinionated path through the course. Follow this order. Skip nothing until you've finished the capstone.
 
-**Total time:** ~31 hours across 2-3 weeks.
+**Total time:** ~36 hours across 3-4 weeks.
 
 ---
 

@@ -107,7 +107,7 @@ ls -la
 ```
 
 You should see:
-- `docker-compose.yml` — Configuration to start the full 11-service monitoring stack
+- `docker-compose.yml` — Configuration to start the full 12-service monitoring stack
 - `prometheus.yml` — Prometheus scrape configuration (6 scrape jobs)
 - `alertmanager.yml` — Alertmanager routing configuration
 - `blackbox.yml` — Blackbox exporter probe configuration
@@ -417,7 +417,7 @@ docker ps -a  # See all containers
 ## Next Steps
 
 Congrats! You now have:
-- Prometheus running locally with a full 11-service stack
+- Prometheus running locally with a full 12-service stack
 - System, application, database, and cache metrics being collected automatically
 - Written 5 real PromQL queries
 - Verified connectivity to all services

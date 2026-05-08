@@ -159,7 +159,7 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 - **Lab:** `labs/module-3-promql/lab-16-capstone.md`
 - **Solution:** `labs/module-3-promql/solutions/lab-16-solution.md`
 - **Topics:** Multi-step queries, health checks, SLA monitoring, capacity planning
-- **Time:** 90 minutes
+- **Time:** 4-6 hours (capstone)
 
 ### Day 17: Production Readiness Checklist
 - **Guide:** `docs/module-3-promql/day-17-production-readiness.md`
@@ -250,6 +250,6 @@ Both tracks cover HTTP metrics and middleware patterns. Choose the language you'
 | Getting Started | 2–3 hours |
 | Module 1: Fundamentals | 6 hours |
 | Module 2: Instrumentation | 6 hours |
-| Module 3: PromQL | 16 hours |
+| Module 3: PromQL | 18.5 hours |
 | Core Capstone | 3–4 hours |
-| **Total (core path)** | **~33.5 hours** |
+| **Total (core path)** | **~36 hours** |

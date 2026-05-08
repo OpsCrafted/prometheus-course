@@ -1,6 +1,6 @@
 # 📊 Prometheus + PromQL Course
 
-Master monitoring and observability in 2-3 weeks. Self-paced hands-on course for DevOps/SRE engineers.
+Master monitoring and observability in 3-4 weeks. Self-paced hands-on course for DevOps/SRE engineers.
 
 > **New here? Start:** [START_HERE.md](START_HERE.md) — opinionated step-by-step path through the course.
 > **Full course index:** [COURSE_INDEX.md](COURSE_INDEX.md)
@@ -28,7 +28,7 @@ Before starting, verify you have:
 - ✅ **Docker** (v20.10+) — [Install](https://docs.docker.com/get-docker/)
 - ✅ **Docker Compose** (v2.0+) — Usually included with Docker Desktop
 - ✅ **Git** — For cloning the course
-- ✅ **~15 hours** over 2-3 weeks (5-7 hours/week)
+- ✅ **~36 hours** over 3-4 weeks (8-10 hours/week)
 - ✅ **Basic Linux/CLI** — Comfortable with terminal commands
 
 **Not required:** Existing Prometheus knowledge. Kubernetes experience. Go expertise.
@@ -38,13 +38,13 @@ Before starting, verify you have:
 ## ⏱️ Course Timeline
 
 ```
-Week 1                          Week 2                      Week 3
-├─ Getting Started (2-3h)       ├─ Days 5-8               ├─ Days 13-15
-├─ Days 1-4 (6-8h)            │  Instrumentation        │  PromQL Capstone
-│  Fundamentals               │  (6-8h)                │  (4-6h)
+Week 1                          Week 2                      Week 3-4
+├─ Getting Started (2-3h)       ├─ Days 5-8               ├─ Days 13-19
+├─ Days 1-4 (6-8h)            │  Instrumentation        │  PromQL + Production
+│  Fundamentals               │  (6-8h)                │  (18.5h)
 │                             │                         │
-│ [████████████░░░]           │ [██████████░░░░░]       │ [████████░░░░░░]
-└─ 2-3 days of study          └─ 2-3 days of study     └─ 1-2 days of study
+│ [████████████░░░]           │ [██████████░░░░░]       │ [████████████░░░]
+└─ 2-3 days of study          └─ 2-3 days of study     └─ 4-6 days of study
 ```
 
 ---
@@ -142,10 +142,10 @@ Track your progress:
   - Custom metrics exported to Prometheus
   - Dashboard shows your metrics
 
-- [ ] **Week 3:** Complete Days 9-17 (PromQL + Capstone + Production Readiness)
+- [ ] **Weeks 3-4:** Complete Days 9-19 (PromQL + Production Operations)
   - Write 10+ different PromQL queries
   - Complete the 3 core capstone scenarios (Latency Spike, Cardinality Explosion, Partial Outage)
-  - Wire 5 production alerts and complete the production readiness checklist
+  - Wire 5 production alerts, configure Alertmanager routing, complete production readiness checklist
 
 ---
 
@@ -207,7 +207,7 @@ By the end:
 
 - **Week 1:** A working full observability stack (12 services), understanding of metrics
 - **Week 2:** Instrumented Go application exporting custom metrics
-- **Week 3:** Custom dashboard showing business + system metrics, 3 passing capstone challenges
+- **Weeks 3-4:** Custom dashboard, 3 passing capstone challenges, 5 wired production alerts, recording rules, Alertmanager routing configured
 
 You'll have hands-on experience with the monitoring stack used in production systems worldwide.
 
