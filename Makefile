@@ -1,4 +1,4 @@
-.PHONY: setup verify down clean reset logs-prometheus logs-grafana logs-app verify-rules verify-day-5 verify-day-9 verify-day-10 verify-day-12 verify-day-13 verify-day-15 verify-day-16 verify-day-17 verify-day-11 verify-day-14 verify-day-18 help
+.PHONY: setup verify down clean reset logs-prometheus logs-grafana logs-app verify-rules verify-day-5 verify-day-6 verify-day-7 verify-day-8 verify-day-9 verify-day-10 verify-day-11 verify-day-12 verify-day-13 verify-day-14 verify-day-15 verify-day-16 verify-day-17 verify-day-18 help
 
 help:
 	@echo "Prometheus Course — Available targets:"
@@ -11,6 +11,9 @@ help:
 	@echo "  make logs-grafana       — Tail Grafana logs"
 	@echo "  make logs-app           — Tail sample-app logs"
 	@echo "  make verify-day-5       — Verify Day 5 (Go instrumentation metrics)"
+	@echo "  make verify-day-6       — Verify Day 6 (HTTP metrics with status labels)"
+	@echo "  make verify-day-7       — Verify Day 7 (custom gauges)"
+	@echo "  make verify-day-8       — Verify Day 8 (cardinality sanity check)"
 	@echo "  make verify-day-9       — Verify Day 9 (instant queries and label selectors)"
 	@echo "  make verify-day-10      — Verify Day 10 (aggregation operators)"
 	@echo "  make verify-day-12      — Verify Day 12 (binary operators)"
@@ -48,6 +51,22 @@ verify-day-5:
 	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=http_requests_total' | jq -e '.status == "success" and (.data.result | length > 0)' > /dev/null && echo "✓ http_requests_total counter exists" || (echo "✗ http_requests_total not found"; exit 1)
 	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=http_request_duration_seconds_bucket' | jq -e '.status == "success" and (.data.result | length > 0)' > /dev/null && echo "✓ http_request_duration_seconds histogram exists" || (echo "✗ http_request_duration_seconds not found"; exit 1)
 	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=http_request_size_bytes_bucket' | jq -e '.status == "success" and (.data.result | length > 0)' > /dev/null && echo "✓ http_request_size_bytes histogram exists" || (echo "✗ http_request_size_bytes not found"; exit 1)
+
+verify-day-6:
+	@echo "Verifying Day 6 (HTTP metrics with status labels)..."
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=http_requests_total%7Bstatus%3D%22200%22%7D' | jq -e '.data.result | length > 0' > /dev/null && echo "✓ http_requests_total has status=200 label" || (echo "✗ status label not found — stack may need 1+ minute of load"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=http_requests_total%7Bstatus%3D%22500%22%7D' | jq -e '.data.result | length > 0' > /dev/null && echo "✓ http_requests_total has status=500 label (from /error endpoint)" || (echo "✗ status=500 not found — load generator may not be running"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=count+by+(status)(http_requests_total)' | jq -e '.data.result | length >= 2' > /dev/null && echo "✓ multiple status codes tracked" || (echo "✗ fewer than 2 status codes found"; exit 1)
+
+verify-day-7:
+	@echo "Verifying Day 7 (custom gauges)..."
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=active_connections' | jq -e '.data.result | length > 0' > /dev/null && echo "✓ active_connections gauge exists" || (echo "✗ active_connections not found — check sample-app is running"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=active_connections+%3E%3D+0' | jq -e '.data.result | length > 0' > /dev/null && echo "✓ active_connections value is non-negative (valid gauge)" || (echo "✗ gauge value check failed"; exit 1)
+
+verify-day-8:
+	@echo "Verifying Day 8 (cardinality sanity check)..."
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=count(http_requests_total)' | jq -e '(.data.result[0].value[1] | tonumber) < 500' > /dev/null && echo "✓ http_requests_total cardinality is bounded (< 500 series)" || (echo "✗ cardinality too high — check for unbounded labels"; exit 1)
+	cd labs && docker compose exec prometheus wget -q -O - 'http://localhost:9090/api/v1/query?query=count(%7B__name__%3D~%22.%2B%22%7D)' | jq -e '(.data.result[0].value[1] | tonumber) < 10000' > /dev/null && echo "✓ total series count is healthy (< 10000)" || (echo "✗ total series count too high — Prometheus memory may be at risk"; exit 1)
 
 verify-day-9:
 	@echo "Verifying Day 9 (instant queries and label selectors)..."

@@ -109,6 +109,7 @@ Three real-world debugging scenarios. Do these after Day 16 if you want producti
 - `docs/capstone/` — supplementary scenarios, do after Day 16
 - `docs/module-2-instrumentation/day-6-python-instrumentation.md` — only if you skipped Go Day 6
 - `docs/06-pitfalls/` — read after you finish the course
+- `docs/superpowers/` — internal course development docs, not student content
 
 ---
 
