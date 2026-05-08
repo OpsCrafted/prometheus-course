@@ -41,7 +41,7 @@ Before starting, verify you have:
 Week 1                          Week 2                      Week 3-4
 ├─ Getting Started (2-3h)       ├─ Days 5-8               ├─ Days 9-19
 ├─ Days 1-4 (6-8h)            │  Instrumentation        │  PromQL + Production
-│  Fundamentals               │  (6-8h)                │  (18.5h)
+│  Fundamentals               │  (6-8h)                │  (~16h)
 │                             │                         │
 │ [████████████░░░]           │ [██████████░░░░░]       │ [████████████░░░]
 └─ 2-3 days of study          └─ 2-3 days of study     └─ 4-6 days of study
@@ -92,7 +92,7 @@ Week 1                          Week 2                      Week 3-4
 | 1️⃣3️⃣ | [Functions](docs/module-3-promql/day-13-functions.md) | 90m | Mathematical operators |
 | 1️⃣4️⃣ | [Histograms](docs/module-3-promql/day-14-histograms.md) | 90m | Percentiles, latency analysis |
 | 1️⃣5️⃣ | [SLOs & Burn Rates](docs/module-3-promql/day-15-slos-burn-rates.md) | 90m | SLI, error budget, burn rate alerting |
-| 1️⃣6️⃣ | [Capstone](docs/module-3-promql/day-16-capstone.md) | 4-6h | 5 PromQL challenges |
+| 1️⃣6️⃣ | [Capstone](docs/module-3-promql/day-16-capstone.md) | 2h | 5 PromQL challenges |
 | 1️⃣7️⃣ | [Production Readiness](docs/module-3-promql/day-17-production-readiness.md) | 90m | 5 essential alerts, Golden Signals, checklist |
 | 1️⃣8️⃣ | [Recording Rules](docs/module-3-promql/day-18-recording-rules.md) | 45m | Pre-aggregate expensive queries, faster dashboards |
 | 1️⃣9️⃣ | [Alertmanager](docs/module-3-promql/day-19-alertmanager.md) | 60m | Routing, grouping, inhibition, silences |

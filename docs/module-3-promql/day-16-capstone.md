@@ -2,6 +2,8 @@
 
 **Time:** 90 minutes | **Prerequisites:** Days 9-15 completed
 
+> **Note:** This day covers 5 PromQL query challenges (~2h total with the lab). The deeper real-world incident scenarios (Latency Spike, Cardinality Explosion, Partial Outage) are a separate capstone in `labs/capstone/` — do those after finishing Day 19.
+
 ## Learning Outcomes
 
 - [ ] Combine multiple PromQL concepts
