@@ -7,13 +7,19 @@
 
 Prometheus reads scrape configs from `prometheus.yml`. Docker Compose mounts `labs/prometheus.yml` into the Prometheus container at `/etc/prometheus/prometheus.yml`. Since docker-compose.yml runs from the labs/ directory, the mount path `./prometheus.yml` refers to the file at `labs/prometheus.yml` from the course root. You can modify this file and reload Prometheus to see changes take effect immediately.
 
-## Lab: Add a Third Scrape Target
+## Lab: Add a New Scrape Target
 
-**Current targets:**
+**Current targets (6 already configured):**
 - prometheus (self-monitoring)
 - node-exporter (system metrics)
+- sample-app (the Go application)
+- postgres-exporter (database metrics)
+- redis-exporter (cache metrics)
+- blackbox (HTTP probe)
 
-**Goal:** Add "sample-endpoint" to scrape config and verify it appears in Prometheus.
+**Goal:** Add `pushgateway` as a 7th scrape target and verify it appears in Prometheus.
+
+Pushgateway is already running in the stack (port 9091) but not yet scraped — a realistic scenario where a service exists but hasn't been wired into monitoring yet.
 
 ### Steps
 
@@ -23,25 +29,16 @@ Prometheus reads scrape configs from `prometheus.yml`. Docker Compose mounts `la
 cat labs/prometheus.yml
 ```
 
-You should see:
-```yaml
-scrape_configs:
-  - job_name: 'prometheus'
-    ...
-  - job_name: 'node-exporter'
-    ...
-  - job_name: 'sample-app'
-    ...
-```
+You should see 6 jobs under `scrape_configs`.
 
-**Step 2: Add sample-endpoint to the config**
+**Step 2: Add pushgateway to the config**
 
 Edit `labs/prometheus.yml` and add this after the existing jobs:
 
 ```yaml
-  - job_name: 'sample-endpoint'
+  - job_name: 'pushgateway'
     static_configs:
-      - targets: ['sample-endpoint:80']
+      - targets: ['pushgateway:9091']
 ```
 
 **Step 3: Reload Prometheus**
@@ -58,10 +55,7 @@ Expected: HTTP 200 OK (silent response)
 
 Open http://localhost:9090, click **Status** > **Targets** tab.
 
-You should now see 3 targets:
-- prometheus (UP)
-- node-exporter (UP)
-- sample-endpoint (may be UP or DOWN — sample endpoint may not expose Prometheus metrics)
+You should now see 7 targets, all UP — including the new `pushgateway` job.
 
 **Step 5: Check metrics count**
 
@@ -71,7 +65,7 @@ In Graph tab, type:
 count(up)
 ```
 
-Click Execute. Graph should show value `3` (you now have 3 targets).
+Click Execute. Graph should show value `7` (all 7 targets now scraped).
 
 ## Solution
 
@@ -83,10 +77,6 @@ See `labs/module-1-fundamentals/solutions/lab-1-solution.yml`
 - Prometheus not running. Try: `make setup`
 - Verify curl worked: check stdout for "HTTP 200"
 
-**sample-endpoint shows DOWN:**
-- Expected — sample-endpoint doesn't expose Prometheus metrics by default
-- Still counts as a target
-
 **Can't edit .yml file:**
 - Make sure you're editing `labs/prometheus.yml` in the labs directory
 
@@ -96,7 +86,7 @@ See `labs/module-1-fundamentals/solutions/lab-1-solution.yml`
 
 ## Exit Criteria
 
-- [ ] Modified labs/prometheus.yml
+- [ ] Modified labs/prometheus.yml to add pushgateway job
 - [ ] Curl reload returns HTTP 200
-- [ ] See 3 targets in Targets tab
-- [ ] `count(up)` returns 3
+- [ ] See 7 targets in Targets tab (all UP)
+- [ ] `count(up)` returns 7

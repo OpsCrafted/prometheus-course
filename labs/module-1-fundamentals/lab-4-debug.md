@@ -34,18 +34,21 @@ scrape_configs:
 
 ## Hints
 
-- Check the original lab-1-prometheus.yml to see what jobs were originally configured
+- Check the original labs/prometheus.yml to see what jobs should be configured
 - Without complete config, some targets won't appear in Prometheus UI
 - Check Prometheus Targets tab to see which jobs are configured
 
 ## Solution
 
-Check the original config and add any missing jobs:
+Compare `labs/prometheus.yml` against the broken config and add the missing jobs. All 6 original jobs should be present:
 
 ```yaml
-  - job_name: 'sample-endpoint'
-    static_configs:
-      - targets: ['sample-endpoint:80']
+  - job_name: 'prometheus'
+  - job_name: 'node-exporter'
+  - job_name: 'sample-app'
+  - job_name: 'postgres-exporter'
+  - job_name: 'redis-exporter'
+  - job_name: 'blackbox'
 ```
 
 Then reload: `curl -X POST http://localhost:9090/-/reload`
